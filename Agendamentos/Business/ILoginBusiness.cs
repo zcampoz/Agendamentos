@@ -10,5 +10,9 @@ namespace Agendamentos.Business
         TokenVO ValidateCredentials(TokenVO token);
 
         bool RevokeToken(string username);
+
+        UsuarioVO CreateUser(UsuarioVO usuarioVO);
+
+        UsuarioVO GetUserByEmail(string email);
     }
 }

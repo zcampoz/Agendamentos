@@ -1,5 +1,6 @@
 ﻿using Agendamentos.Commom.DTO;
 using Agendamentos.Configurations;
+using Agendamentos.Data.Converter.Implementation;
 using Agendamentos.Data.VO;
 using Agendamentos.Model;
 using Agendamentos.Repository;
@@ -17,12 +18,29 @@ namespace Agendamentos.Business.Implementation
         private TokenConfiguration _configuration;
         private IUsuarioRepository _usuariosRepository;
         private ITokenService _tokenService;
+        private readonly UsuarioConverter _converter;
 
         public LoginBusiness(TokenConfiguration configuration, IUsuarioRepository usuariosRepository, ITokenService tokenService)
         {
             _configuration = configuration;
             _usuariosRepository = usuariosRepository;
             _tokenService = tokenService;
+            _converter = new UsuarioConverter();
+        }
+
+        public UsuarioVO GetUserByEmail(string email)
+        {
+            var usuario = _usuariosRepository.GetByEmail(email);
+            return _converter.Parser(usuario); ;
+        }
+
+        public UsuarioVO CreateUser(UsuarioVO usuarioVO)
+        {
+            usuarioVO.RefreshToken = _tokenService.GenerateRefreshToken();
+            usuarioVO.DataExpiracaoRefreshToken = DateTime.Now.AddDays(_configuration.DaysToExpire);
+
+            var usuarioEntity = _usuariosRepository.Insert(_converter.Parser(usuarioVO));
+            return _converter.Parser(usuarioEntity);
         }
 
         public bool RevokeToken(string username)

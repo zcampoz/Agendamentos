@@ -1,7 +1,5 @@
 ﻿using Agendamentos.Commom.DTO;
-using Agendamentos.Data.VO;
 using Agendamentos.Model;
-using Agendamentos.Model.Base;
 using Agendamentos.Model.Context;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
@@ -23,18 +21,24 @@ namespace Agendamentos.Repository
 
         public List<Usuario> FindAll()
         {
-            return dataSet.ToList();
+            return _context.Usuarios.ToList();
         }
 
         public Usuario Get(long id)
         {
-            return dataSet.SingleOrDefault(x => x.ID.Equals(id));
+            return _context.Usuarios.SingleOrDefault(x => x.ID.Equals(id));
+        }
+
+        public Usuario GetByEmail(string email)
+        {
+            return _context.Usuarios.SingleOrDefault(x => x.Email.Equals(email));
         }
 
         public Usuario Insert(Usuario item)
         {
             try
             {
+                item.Senha = ComputeHash(item.Senha, new SHA256CryptoServiceProvider());
                 _context.Add(item);
                 _context.SaveChanges();
                 return item;

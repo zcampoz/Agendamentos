@@ -1,5 +1,4 @@
 ﻿using Agendamentos.Commom.Enum;
-using Agendamentos.Model.Base;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -22,6 +21,6 @@ namespace Agendamentos.Model
 
         public string RefreshToken { get; set; }
 
-        public DateTime DataExpiracaoRefreshToken { get; set; }
+        public DateTime? DataExpiracaoRefreshToken { get; set; }
     }
 }

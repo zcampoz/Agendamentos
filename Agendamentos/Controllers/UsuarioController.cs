@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace Agendamentos.Controllers
 {
     [ApiController]
-    [Authorize("Bearer")]
     [Route("api/[controller]")]
     public class UsuarioController : ControllerBase
     {

@@ -48,5 +48,20 @@ namespace Agendamentos.Controllers
             if (!result) return BadRequest("Token Inválido");
             return NoContent();
         }
+
+        [HttpPost]
+        [Route("register")]
+        public IActionResult Register([FromBody] UsuarioVO usuarioVO)
+        {
+            if (usuarioVO == null) return BadRequest("Usuário Inválido");
+
+            var user = _loginBusiness.GetUserByEmail(usuarioVO.Email);
+            if (user != null) return BadRequest("Usuário já existe");
+
+            var usuario = _loginBusiness.CreateUser(usuarioVO);
+            if (usuario == null) return BadRequest("Usuário Inválido");
+
+            return Ok(usuario);
+        }
     }
 }

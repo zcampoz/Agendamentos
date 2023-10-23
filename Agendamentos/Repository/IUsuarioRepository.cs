@@ -23,5 +23,7 @@ namespace Agendamentos.Repository
         public Usuario AtualizaInfoUsuario(Usuario usuario);
 
         public bool RevokeToken(string username);
+
+        public Usuario GetByEmail(string email);
     }
 }

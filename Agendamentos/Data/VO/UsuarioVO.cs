@@ -13,5 +13,9 @@ namespace Agendamentos.Data.VO
         public string Senha { get; set; }
 
         public UsuarioEnum TipoUsuario { get; set; }
+
+        public string RefreshToken { get; set; }
+
+        public DateTime? DataExpiracaoRefreshToken { get; set; }
     }
 }

@@ -17,7 +17,9 @@ namespace Agendamentos.Data.Converter.Implementation
                 Nome = origem.Nome,
                 Email = origem.Email,
                 Senha = origem.Senha,
-                TipoUsuario = origem.TipoUsuario.ToString()
+                TipoUsuario = origem.TipoUsuario.ToString(),
+                RefreshToken = origem.RefreshToken,
+                DataExpiracaoRefreshToken = origem.DataExpiracaoRefreshToken
             };
         }
 
@@ -33,7 +35,9 @@ namespace Agendamentos.Data.Converter.Implementation
                 Nome = origem.Nome,
                 Email = origem.Email,
                 Senha = origem.Senha,
-                TipoUsuario = enumValue
+                TipoUsuario = enumValue,
+                RefreshToken = origem.RefreshToken,
+                DataExpiracaoRefreshToken = origem.DataExpiracaoRefreshToken
             };
         }
 
