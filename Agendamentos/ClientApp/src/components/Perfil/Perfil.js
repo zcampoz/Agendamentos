@@ -51,11 +51,6 @@ export class Perfil extends Component {
     );
   }
 
-  //async populateUsuariosData() {
-  //  const response = await fetch('api/usuario');
-  //  const data = await response.json();
-  //  this.setState({ users: data, loading: false });
-  //}
     populateUsuariosData() {
         fetch('api/usuario')
             .then(response => response.json())

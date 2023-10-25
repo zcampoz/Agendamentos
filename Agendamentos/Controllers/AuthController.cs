@@ -51,14 +51,14 @@ namespace Agendamentos.Controllers
 
         [HttpPost]
         [Route("register")]
-        public IActionResult Register([FromBody] UsuarioVO usuarioVO)
+        public IActionResult Register([FromBody] RegisterDTO register)
         {
-            if (usuarioVO == null) return BadRequest("Usuário Inválido");
+            if (register == null) return BadRequest("Usuário Inválido");
 
-            var user = _loginBusiness.GetUserByEmail(usuarioVO.Email);
+            var user = _loginBusiness.GetUserByEmail(register.Email);
             if (user != null) return BadRequest("Usuário já existe");
 
-            var usuario = _loginBusiness.CreateUser(usuarioVO);
+            var usuario = _loginBusiness.CreateUser(register);
             if (usuario == null) return BadRequest("Usuário Inválido");
 
             return Ok(usuario);

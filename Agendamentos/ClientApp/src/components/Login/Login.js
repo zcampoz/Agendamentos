@@ -16,11 +16,9 @@ export const Login = () => {
             senha
         };
 
-        console.log(data);
-
         try {
             const response = await api.post('/auth/signin', data);
-            console.log(response);
+
             if (response.status === 200) {
                 localStorage.setItem('email', email);
                 localStorage.setItem('accessToken', response.data.accessToken);
@@ -31,11 +29,11 @@ export const Login = () => {
             else {
                 localStorage.clear();
                 if (response.status === 401) {
-                    console.log('Email e/ou Senha inválidos.');
+                    alert('Email e/ou Senha inválidos.');
                 }
             }
         } catch (e) {
-            console.log('Falha ao fazer login! Tente nonamente!' + e);
+            alert('Falha ao fazer login! Tente nonamente!' + e);
         }
     };
 

@@ -11,7 +11,7 @@ namespace Agendamentos.Business
 
         bool RevokeToken(string username);
 
-        UsuarioVO CreateUser(UsuarioVO usuarioVO);
+        UsuarioVO CreateUser(RegisterDTO register);
 
         UsuarioVO GetUserByEmail(string email);
     }
