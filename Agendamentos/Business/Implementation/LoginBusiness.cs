@@ -74,7 +74,7 @@ namespace Agendamentos.Business.Implementation
 
         public TokenVO ValidateCredentials(TokenVO token)
         {
-            var accessToken = token.AcessToken;
+            var accessToken = token.AccessToken;
             var refreshToken = token.RefreshToken;
 
             var principal = _tokenService.GetPrincipalFromExpiredToken(accessToken);

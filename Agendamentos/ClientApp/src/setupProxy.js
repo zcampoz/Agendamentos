@@ -10,7 +10,8 @@ const context = [
   "/api/categoriaservico",
   "/api/horariodisponibilidade",
   "/api/servico",
-  "/api/usuario"
+  "/api/usuario",
+  "/api/auth",
 ];
 
 const onError = (err, req, resp, target) => {

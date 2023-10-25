@@ -7,7 +7,11 @@ import { Home } from "./components/Home/Home";
 const AppRoutes = [
     {
         index: true,
-        element: <Home />
+        element: <Login />
+    },
+    {
+        path: '/',
+        element: <Login />
     },
     {
         path: '/home',
@@ -20,10 +24,6 @@ const AppRoutes = [
     {
         path: '/perfil',
         element: <Perfil />
-    },
-    {
-        path: '/login',
-        element: <Login />
     },
     {
         path: '/registro',
