@@ -34,13 +34,20 @@ namespace Agendamentos.Business.Implementation
             return _converter.Parser(usuario); ;
         }
 
-        public UsuarioVO CreateUser(UsuarioVO usuarioVO)
+        public UsuarioVO CreateUser(RegisterDTO register)
         {
-            usuarioVO.RefreshToken = _tokenService.GenerateRefreshToken();
-            usuarioVO.DataExpiracaoRefreshToken = DateTime.Now.AddDays(_configuration.DaysToExpire);
+            var usuarioVO = new UsuarioVO() 
+            { 
+                Nome = register.Nome,
+                Email = register.Email,
+                Senha = register.Senha,
+                TipoUsuario = Commom.Enum.UsuarioEnum.cliente,
+                RefreshToken = _tokenService.GenerateRefreshToken(),
+                DataExpiracaoRefreshToken = DateTime.Now.AddDays(_configuration.DaysToExpire)
+            };
 
             var usuarioEntity = _usuariosRepository.Insert(_converter.Parser(usuarioVO));
-            return _converter.Parser(usuarioEntity);
+                return _converter.Parser(usuarioEntity);
         }
 
         public bool RevokeToken(string username)
