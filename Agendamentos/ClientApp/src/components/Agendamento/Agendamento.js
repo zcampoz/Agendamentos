@@ -1,74 +1,71 @@
-﻿import React, { Component } from 'react';
+﻿import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { DateSelector, TimeSlotSelector } from './DateTimeSelectors';
+import { api } from '../../services/api';
 
-export class Agendamento extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            selectedService: null,
-            selectedDate: null,
-            selectedTimeSlot: null,
-        };
-    }
+export const Agendamento = () => {
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
 
-    handleServiceSelection = (service) => {
-        this.setState({ selectedService: service });
+    const location = useLocation();
+    const selectedService = location.state && location.state.selectedService;
+
+    const accessToken = localStorage.getItem('accessToken');
+    const config = {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+        },
     };
 
-    handleDateSelection = (date) => {
-        this.setState({ selectedDate: date });
+    const handleDateSelection = (date) => {
+        setSelectedDate(date);
     };
 
-    handleTimeSlotSelection = (timeSlot) => {
-        this.setState({ selectedTimeSlot: timeSlot });
+    const handleTimeSlotSelection = (timeSlot) => {
+        setSelectedTimeSlot(timeSlot);
     };
 
-    handleAgendamentoSubmit = () => {
+
+    const handleAgendamentoSubmit = () => {
         const { selectedService, selectedTimeSlot } = this.state;
+
         if (selectedService && selectedTimeSlot) {
-            fetch('api/agendamento', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    serviceId: selectedService.id,
-                    timeSlotId: selectedTimeSlot.id,
-                }),
+            const user = localStorage.getItem('user');
+
+            const data = {
+                usuarioId: user.id, 
+                servicoId: selectedService.id, 
+                dataAgendamento: selectedDate,
+                horarioAgendamento: selectedTimeSlot,
+            };
+
+            api.post('agendamento/agendar', data, config)
+            .then((response) => {
+                console.log('Agendamento bem-sucedido:', response.data);
             })
-            .then(response => response.json())
-            .then(data => {
-                // Lógica de tratamento da resposta da API
-                console.log('Agendamento bem-sucedido:', data);
-            })
-            .catch(error => {
+            .catch((error) => {
                 console.error('Erro ao agendar serviço:', error);
             });
         }
     };
 
-    render() {
-        // Renderizar opções de agendamento, incluindo seleção de datas e horários
-        return (
-            <div>
-                <h2>Agendar Serviço</h2>
-                {/* Mostrar dados do Serviço(Get/servico/:id) */}
+    return (
+        <div>
+            <h2>Agendar Serviço</h2>
+            {/* Mostrar dados do Serviço (Get/servico/:id) */}
+            <h3>{selectedService.nome}</h3>
+            <h4>{selectedService.descricao}</h4>
+            <h4>{selectedService.preco}</h4>
 
-                {/* Componente de seleção de data */}
-                <DateSelector
-                    selectedDate={this.state.selectedDate}
-                    onDateSelect={this.handleDateSelection}
-                />
+            {/* Componente de seleção de data */}
+            <DateSelector selectedDate={selectedDate} onDateSelect={handleDateSelection} />
 
-                {/* Componente de seleção de horário */}
-                <TimeSlotSelector
-                    selectedTimeSlot={this.state.selectedTimeSlot}
-                    onTimeSlotSelect={this.handleTimeSlotSelection}
-                />
+            {/* Componente de seleção de horário */}
+            <TimeSlotSelector selectedTimeSlot={selectedTimeSlot} onTimeSlotSelect={handleTimeSlotSelection} />
 
-                {/* Botão para confirmar o agendamento */}
-                <button onClick={this.handleAgendamentoSubmit}>Agendar</button>
-            </div>
-        );
-    }
+            {/* Botão para confirmar o agendamento */}
+            <button onClick={handleAgendamentoSubmit}>Agendar</button>
+        </div>
+    );
 }

@@ -1,10 +1,4 @@
-﻿using Agendamentos.Commom.Enum;
-using Agendamentos.Model;
-using Agendamentos.Model.Base;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Agendamentos.Commom.DTO
+﻿namespace Agendamentos.Commom.DTO
 {
     public class AgendamentoDto
     {

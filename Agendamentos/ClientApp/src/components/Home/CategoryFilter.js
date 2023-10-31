@@ -1,5 +1,5 @@
 ﻿import React, { Component } from 'react';
-
+import { api } from '../../services/api'
 class CategoryFilter extends Component {
     constructor(props) {
         super(props);
@@ -10,15 +10,22 @@ class CategoryFilter extends Component {
     }
 
     componentDidMount() {
-        // Fazer a requisição à API
-        fetch('api/categoriaservico')
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ categories: data });
-            })
-            .catch(error => {
-                console.error('Erro ao carregar categorias de serviço:', error);
-            });
+        const accessToken = localStorage.getItem('accessToken');
+        const config = {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        };
+
+        api.get('categoriaservico', config)
+        .then((response) => {
+            this.setState({ categories: response.data });
+            //setLoading(false);
+        })
+        .catch((error) => {
+            //setLoading(false);
+            console.error('Erro ao carregar categorias de serviço:', error);
+        });
     }
 
     handleFilterChange = (event) => {
