@@ -16,4 +16,9 @@ public class Servico : BaseEntity
     public long CategoriaID { get; set; }
 
     public CategoriaServico Categoria { get; set; }
+
+    [ForeignKey("Prestador")]
+    public long PrestadorID { get; set; }
+
+    public Usuario Prestador { get; set; }
 }

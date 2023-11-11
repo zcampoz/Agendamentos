@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Agendamentos.Data.VO
+﻿namespace Agendamentos.Data.VO
 {
     public class ServicoVO
     {
@@ -17,5 +15,9 @@ namespace Agendamentos.Data.VO
         public long CategoriaID { get; set; }
 
         public CategoriaServicoVO Categoria { get; set; }
+
+        public long PrestadorID { get; set; }
+
+        public UsuarioVO Prestador { get; set; }
     }
 }

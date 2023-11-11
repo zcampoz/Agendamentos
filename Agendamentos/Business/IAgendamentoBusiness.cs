@@ -15,6 +15,6 @@ namespace Agendamentos.Repository
 
         public void Delete(long id);
 
-        public AgendamentoDto InsertAgendamento(AgendamentoDto agendamento);
+        public AgendamentoVO InsertAgendamento(AgendamentoDto agendamento);
     }
 }

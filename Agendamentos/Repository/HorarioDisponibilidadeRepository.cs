@@ -1,39 +1,36 @@
 ﻿using Agendamentos.Model;
-using Agendamentos.Model.Base;
 using Agendamentos.Model.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace Agendamentos.Repository
 {
-    public class ServicoRepository : IServicoRepository
+    public class HorarioDisponibilidadeRepository : IHorarioDisponibilidadeRepository
     {
         private SqlContext _context;
 
-        private DbSet<Servico> dataSet;
+        private DbSet<HorarioDisponibilidade> dataSet;
 
-        public ServicoRepository(SqlContext context)
+        public HorarioDisponibilidadeRepository(SqlContext context)
         {
             _context = context;
-            dataSet = _context.Set<Servico>();
+            dataSet = _context.Set<HorarioDisponibilidade>();
         }
 
-        public List<Servico> FindAll()
+        public List<HorarioDisponibilidade> FindAll()
         {
-            return _context.Servicos
-                .Include(x => x.Categoria)
+            return _context.HorariosDisponibilidade
                 .Include(x => x.Prestador)
                 .ToList();
         }
 
-        public Servico Get(long id)
+        public HorarioDisponibilidade Get(long id)
         {
-            return _context.Servicos
-                .Include(x => x.Categoria)
+            return _context.HorariosDisponibilidade
                 .Include(x => x.Prestador)
                 .FirstOrDefault(x => x.ID.Equals(id));
         }
 
-        public Servico Insert(Servico item)
+        public HorarioDisponibilidade Insert(HorarioDisponibilidade item)
         {
             try
             {
@@ -47,7 +44,7 @@ namespace Agendamentos.Repository
             }
         }
 
-        public Servico Update(Servico item)
+        public HorarioDisponibilidade Update(HorarioDisponibilidade item)
         {
             var result = dataSet.FirstOrDefault(x => x.ID == item.ID);
             if (result != null)
@@ -91,6 +88,12 @@ namespace Agendamentos.Repository
         private bool Exists(long id)
         {
             return dataSet.Any(x => x.ID == id);
+        }
+
+        public HorarioDisponibilidade GetHorario(long prestadorId, string diaDaSemana)
+        {
+            return _context.HorariosDisponibilidade
+                .FirstOrDefault(x => x.PrestadorID.Equals(prestadorId) && x.DiaSemana.Equals(diaDaSemana));
         }
     }
 }

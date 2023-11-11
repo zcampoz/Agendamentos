@@ -15,22 +15,26 @@ export const Registro = () => {
         const data = { nome, email, senha };
 
         try {
-            const response = await api.post('/auth/register', data);
+            const response = await api.post('/auth/register', data)
+            .then(response => {
+                console.log('Response:', response.data);
+                if (response.status === 200) {
+                    localStorage.clear();
+                    localStorage.setItem('userId', response.data.userId);
+                    localStorage.setItem('authenticated', response.data.authenticated);
+                    localStorage.setItem('accessToken', response.data.accessToken);
+                    localStorage.setItem('refreshToken', response.data.refreshToken);
 
-            console.log(response);
-            if (response.status === 200) {
-                localStorage.clear();
-                localStorage.setItem('user', JSON.stringify(response.data));
-                localStorage.setItem('accessToken', response.data.accessToken);
-                localStorage.setItem('refreshToken', response.data.refreshToken);
-
-                navigate('/perfil');
-            } else {
+                    navigate('/perfil');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
                 localStorage.clear();
                 if (response.status === 401) {
                     console.log('Email e/ou Senha inválidos.');
                 }
-            }
+            });
         } catch (e) {
             console.log('Falha ao registrar! Tente nonamente!' + e);
         }

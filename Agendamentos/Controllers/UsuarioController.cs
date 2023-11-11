@@ -29,6 +29,12 @@ namespace Agendamentos.Controllers
         {
             return Ok(_business.Get(id));
         }
+        
+        [HttpGet("email/{email}")]
+        public IActionResult Get(string email)
+        {
+            return Ok(_business.GetByEmail(email).ID);
+        }
 
         [HttpPost]
         public IActionResult Create([FromBody] UsuarioVO usuario)

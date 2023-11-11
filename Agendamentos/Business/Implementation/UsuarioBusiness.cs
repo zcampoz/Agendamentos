@@ -26,6 +26,11 @@ namespace Agendamentos.Business.Implementation
             return _converter.Parser(_repository.Get(id));
         }
 
+        public UsuarioVO GetByEmail(string email)
+        {
+            return _converter.Parser(_repository.GetByEmail(email));
+        }
+
         public UsuarioVO Insert(UsuarioVO usuario)
         {
             var entity = _converter.Parser(usuario);

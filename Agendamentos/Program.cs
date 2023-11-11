@@ -74,7 +74,7 @@ builder.Services.AddScoped<ILoginBusiness, LoginBusiness>();
 builder.Services.AddScoped<IAgendamentoRepository, AgendamentoRepository>();
 //builder.Services.AddScoped<IAvaliacaoRepository, AvaliacaoRepository>();
 //builder.Services.AddScoped<ICategoriaServicoRepository, CategoriaServicoRepository>();
-//builder.Services.AddScoped<IHorarioDisponibilidadeRepository, HorarioDisponibilidadeRepository>();
+builder.Services.AddScoped<IHorarioDisponibilidadeRepository, HorarioDisponibilidadeRepository>();
 builder.Services.AddScoped<IServicoRepository, ServicoRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
@@ -88,6 +88,32 @@ builder.Services.AddDbContext<SqlContext>(options =>
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Agendamentos", Version = "v1" });
+    //c.EnableAnnotations();
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme 
+    { 
+        Description = @"Enter 'Bearer' [space] and your token!",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement 
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                In = ParameterLocation.Header
+            },
+            new List<string>()
+        }
+    });
 });
 
 var app = builder.Build();

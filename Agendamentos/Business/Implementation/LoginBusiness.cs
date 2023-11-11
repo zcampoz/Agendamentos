@@ -76,7 +76,7 @@ namespace Agendamentos.Business.Implementation
             DateTime createdDate = DateTime.Now;
             DateTime expirationDate = createdDate.AddMinutes(_configuration.Minutes);
 
-            return new TokenVO(true, createdDate.ToString(DATE_FORMAT), expirationDate.ToString(DATE_FORMAT), accessToken, refreshToken);
+            return new TokenVO(true, createdDate.ToString(DATE_FORMAT), expirationDate.ToString(DATE_FORMAT), accessToken, refreshToken, usuario.ID);
         }
 
         public TokenVO ValidateCredentials(TokenVO token)
@@ -107,7 +107,7 @@ namespace Agendamentos.Business.Implementation
             return new TokenVO(true, 
                 createdDate.ToString(DATE_FORMAT), 
                 expirationDate.ToString(DATE_FORMAT), 
-                accessToken, refreshToken);
+                accessToken, refreshToken, user.ID);
         }
     }
 }

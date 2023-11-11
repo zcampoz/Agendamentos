@@ -2,14 +2,14 @@
 {
     public class AgendamentoDto
     {
-        public long ID { get; set; }
+        public long UsuarioId { get; set; }
 
-        public DateTime DataHora { get; set; }
+        public long ServicoId { get; set; }
 
-        public long ClienteID { get; set; }
+        public long PrestadorId { get; set; }
 
-        public long PrestadorID { get; set; }
+        public string DataHora { get; set; }
 
-        public long ServicoID { get; set; }
+        public string HorarioAgendamento { get; set; }
     }
 }

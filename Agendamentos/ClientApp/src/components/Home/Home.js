@@ -9,6 +9,13 @@ export const Home = () => {
     const [categoryFilter, setCategoryFilter] = useState("0");
     const navigate = useNavigate();
 
+    const accessToken = localStorage.getItem('accessToken');
+    const config = {
+        headers: {
+            Authorization: `Bearer ${accessToken}`
+        },
+    };
+
     const handleServiceSelection = (service) => {
         navigate('/agendamento', { state: { selectedService: service } });
     };
@@ -27,21 +34,14 @@ export const Home = () => {
             : services.filter((service) => service.categoriaID == categoryFilter);
 
     const populateServicosData = () => {
-        const accessToken = localStorage.getItem('accessToken');
-        console.log(accessToken);
-        const config = {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        };
-        console.log(config);
         api.get('servico', config)
         .then((response) => {
-            console.log(response);
+            console.log(response.data);
             setServices(response.data);
         })
         .catch((error) => {
             console.error('Erro ao buscar serviços:', error);
+            alert('Erro ao buscar serviços!');
         });
     };
 
@@ -83,7 +83,7 @@ export const Home = () => {
                             <h2>{service.nome}</h2>
                             <p>{service.descricao}</p>
                             <p>{service.categoriaNome}</p>
-                            <p>Preço: {service.preco}</p>
+                            <p>Preço: {Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(service.preco)}</p>
                             <button onClick={() => handleServiceSelection(service)}>Agendar</button>
                         </div>
                     ))}

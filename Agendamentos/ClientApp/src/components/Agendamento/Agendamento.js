@@ -1,5 +1,5 @@
 ﻿import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { DateSelector, TimeSlotSelector } from './DateTimeSelectors';
 import { api } from '../../services/api';
 
@@ -8,6 +8,7 @@ export const Agendamento = () => {
     const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
 
     const location = useLocation();
+    const navigate = useNavigate();
     const selectedService = location.state && location.state.selectedService;
 
     const accessToken = localStorage.getItem('accessToken');
@@ -28,25 +29,26 @@ export const Agendamento = () => {
 
 
     const handleAgendamentoSubmit = () => {
-        const { selectedService, selectedTimeSlot } = this.state;
-
-        if (selectedService && selectedTimeSlot) {
-            const user = localStorage.getItem('user');
+        if (location.state && location.state.selectedService && selectedTimeSlot) {
+            const userId = parseInt(localStorage.getItem('userId'), 10);
 
             const data = {
-                usuarioId: user.id, 
-                servicoId: selectedService.id, 
-                dataAgendamento: selectedDate,
-                horarioAgendamento: selectedTimeSlot,
+                usuarioId: userId,
+                servicoId: location.state.selectedService.id,
+                prestadorId: location.state.selectedService.prestadorID,
+                dataHora: selectedDate.toString(),
+                horarioAgendamento: selectedTimeSlot.toString(),
             };
 
-            api.post('agendamento/agendar', data, config)
-            .then((response) => {
-                console.log('Agendamento bem-sucedido:', response.data);
-            })
-            .catch((error) => {
-                console.error('Erro ao agendar serviço:', error);
-            });
+            api.post('agendamento', data, config)
+                .then((response) => {
+                    console.log('Agendamento bem-sucedido:', response.data);
+                    navigate('/home');
+                })
+                .catch((error) => {
+                    console.error('Erro ao agendar serviço:', error);
+                    alert('Erro ao agendar serviço!');
+                });
         }
     };
 
@@ -56,7 +58,7 @@ export const Agendamento = () => {
             {/* Mostrar dados do Serviço (Get/servico/:id) */}
             <h3>{selectedService.nome}</h3>
             <h4>{selectedService.descricao}</h4>
-            <h4>{selectedService.preco}</h4>
+            <h4>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(selectedService.preco)}</h4>
 
             {/* Componente de seleção de data */}
             <DateSelector selectedDate={selectedDate} onDateSelect={handleDateSelection} />

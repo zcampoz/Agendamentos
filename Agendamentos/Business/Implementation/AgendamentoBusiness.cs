@@ -35,27 +35,9 @@ namespace Agendamentos.Business.Implementation
             return _converter.Parser(entity);
         }
 
-        public AgendamentoDto InsertAgendamento(AgendamentoDto agendamento)
+        public AgendamentoVO InsertAgendamento(AgendamentoDto agendamento)
         {
-            var entity = new Agendamento()
-                {
-                    DataHora = agendamento.DataHora,
-                    EstadoAgendamento = EstadoAgendamentoEnum.pendente.ToString(),
-                    ClienteID = agendamento.ClienteID,
-                    PrestadorID = agendamento.PrestadorID,
-                    ServicoID = agendamento.ServicoID
-                };
-
-            entity = _repository.Insert(entity);
-
-            return new AgendamentoDto()
-            {
-                ID = entity.ID,
-                DataHora = entity.DataHora,
-                ClienteID = entity.ClienteID,
-                ServicoID = entity.ServicoID,
-                PrestadorID = entity.PrestadorID
-            };
+            return _converter.Parser(_repository.Insert(this.ConvertToEntity(agendamento)));
         }
 
         public AgendamentoVO Update(AgendamentoVO agendamento)
@@ -68,6 +50,18 @@ namespace Agendamentos.Business.Implementation
         public void Delete(long id)
         {
             _repository.Delete(id);
+        }
+
+        private Agendamento ConvertToEntity(AgendamentoDto agendamento)
+        {
+            return new Agendamento()
+            {
+                DataHora = Convert.ToDateTime(agendamento.DataHora + "T" + agendamento.HorarioAgendamento),
+                EstadoAgendamento = EstadoAgendamentoEnum.pendente.ToString(),
+                ClienteID = agendamento.UsuarioId,
+                PrestadorID = agendamento.PrestadorId,
+                ServicoID = agendamento.ServicoId
+            };
         }
     }
 }

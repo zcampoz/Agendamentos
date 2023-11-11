@@ -61,7 +61,12 @@ namespace Agendamentos.Controllers
             var usuario = _loginBusiness.CreateUser(register);
             if (usuario == null) return BadRequest("Usuário Inválido");
 
-            return Ok(usuario);
+            var auth = new AuthDTO() { Email = register.Email, Senha = register.Senha }; 
+
+            var token = _loginBusiness.ValidateCredentials(auth);
+            if (token == null) return Unauthorized();
+
+            return Ok(token);
         }
     }
 }

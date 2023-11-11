@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Agendamentos.Commom.DTO
 {
-    public class HorarioDisponibilidadeDto : BaseEntity
+    public class HorarioDisponibilidadeResponseDto : BaseEntity
     {
         public TimeSpan HoraInicio { get; set; }
 

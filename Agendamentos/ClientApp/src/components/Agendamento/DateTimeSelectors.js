@@ -1,93 +1,100 @@
-﻿import React, { Component } from 'react';
+﻿import React, { useState, useEffect } from 'react';
+import { api } from '../../services/api'
 
-class DateSelector extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            selectedDate: null, // Armazena a data selecionada
-        };
-    }
+export const DateSelector = ({ onDateSelect }) => {
+    const [selectedDate, setSelectedDate] = useState(null);
 
-    handleDateSelect = (event) => {
+    const handleDateSelect = (event) => {
         const selectedDate = event.target.value;
-        this.setState({ selectedDate });
-        // Chame a função de seleção de data passada como prop
-        this.props.onDateSelect(selectedDate);
-    }
+        setSelectedDate(selectedDate);
+        onDateSelect(selectedDate);
+    };
 
-    render() {
-        return (
-            <div>
-                <h3>Selecione uma Data</h3>
-                <input
-                    type="datetime-local"
-                    value={this.state.selectedDate || ''}
-                    onChange={this.handleDateSelect}
-                />
-            </div>
-        );
-    }
+    const currentDate = new Date().toISOString().split('T')[0];
+
+    return (
+        <div>
+            <h3>Selecione uma Data</h3>
+            <input
+                type="date"
+                value={selectedDate || ''}
+                onChange={handleDateSelect}
+                min={currentDate}
+            />
+        </div>
+    );
 }
 
-class TimeSlotSelector extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            availableTimeSlots: [], // Lista de slots de horário disponíveis
-        };
-    }
+export const TimeSlotSelector = ({ startDate, endDate, serviceDuration, selectedTimeSlot, onTimeSlotSelect }) => {
+    const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
+    const [horarios, setHorarios] = useState([]);
 
-    componentDidMount() {
+    const accessToken = localStorage.getItem('accessToken');
+    const config = {
+        headers: {
+            Authorization: `Bearer ${accessToken}`
+        },
+    };
+
+    useEffect(() => {
         // Fazer uma solicitação à API para obter as datas de início e fim disponíveis
-        //this.fetchAvailableTimeSlots(this.props.startDate, this.props.endDate, this.props.serviceDuration);
-        this.fetchAvailableTimeSlots('2023-09-15 09:00:00.000', '2023-09-15 18:00:00.000', 30);
-    }
+        getHorariosDisponiveis();
+        //fetchAvailableTimeSlots(startDate, endDate, serviceDuration);
+        fetchAvailableTimeSlots('2023-09-15 09:00:00.000', '2023-09-15 18:00:00.000', 30);
+    }, [startDate, endDate, serviceDuration]);
 
-    fetchAvailableTimeSlots(startDate, endDate, serviceDuration) {
-        debugger
-        // Dividir os horários em slots de acordo com a duração do serviço
-        const timeSlots = this.splitTimeSlots(startDate, endDate, serviceDuration);
+    const fetchAvailableTimeSlots = (startDate, endDate, serviceDuration) => {
+        const timeSlots = splitTimeSlots(startDate, endDate, serviceDuration);
+        setAvailableTimeSlots(timeSlots);
+    };
 
-        this.setState({ availableTimeSlots: timeSlots });
-    }
-
-    splitTimeSlots(startDate, endDate, serviceDuration) {
+    const splitTimeSlots = (startDate, endDate, serviceDuration) => {
         const timeSlots = [];
         let currentTime = new Date(startDate);
 
         while (currentTime < new Date(endDate)) {
-            timeSlots.push(new Date(currentTime));
+            var timeSlot = new Date(currentTime);
+            timeSlots.push(timeSlot.toLocaleTimeString());
             currentTime = new Date(currentTime.getTime() + serviceDuration * 60 * 1000);
         }
 
         return timeSlots;
+    };
+
+    const handleTimeSlotSelect = (timeSlot) => {
+        onTimeSlotSelect(timeSlot);
+    };
+
+    const getHorariosDisponiveis = () => {
+        const prestadorID = 2;
+        const dataSecionada = '2023-11-13T08:00:00';
+        api.get(`horariodisponibilidade?PrestadorID=${prestadorID}&dataSecionada=${dataSecionada}`, config)
+        .then((response) => {
+            setHorarios(response.data);
+        })
+        .catch((error) => {
+            console.error('Erro ao buscar horarios:', error);
+        });
     }
 
-    render() {
-        const { selectedTimeSlot } = this.props;
-        const { availableTimeSlots } = this.state;
-
-        return (
-            <div>
-                <h3>Selecione um Horário</h3>
-                <ul>
-                    {availableTimeSlots.map((timeSlot) => (
-                        <li key={timeSlot}>
-                            <label>
-                                <input
-                                    type="radio"
-                                    value={timeSlot}
-                                    checked={selectedTimeSlot === timeSlot}
-                                    onChange={() => this.handleTimeSlotSelect(timeSlot)}
-                                />
-                                {timeSlot.toLocaleTimeString()}
-                            </label>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        );
-    }
+    return (
+        <div>
+            <h3>Selecione um Horário</h3>
+            <ul>
+                {availableTimeSlots.map((timeSlot) => (
+                    <li key={timeSlot}>
+                        <label>
+                            <input
+                                type="checkbox"
+                                value={timeSlot}
+                                checked={selectedTimeSlot === timeSlot}
+                                onChange={() => handleTimeSlotSelect(timeSlot)}
+                            />
+                            {timeSlot}
+                        </label>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
 }
-
-export { DateSelector, TimeSlotSelector };

@@ -17,23 +17,30 @@ export const Login = () => {
         };
 
         try {
-            const response = await api.post('/auth/signin', data);
+            const response = await api.post('/auth/signin', data)
+            .then(response => {
+                console.log('Response:', response.data);
+                if (response.status === 200) {
+                    localStorage.clear();
+                    localStorage.setItem('userId', response.data.userId);
+                    localStorage.setItem('authenticated', response.data.authenticated);
+                    localStorage.setItem('accessToken', response.data.accessToken);
+                    localStorage.setItem('refreshToken', response.data.refreshToken);
 
-            if (response.status === 200) {
-                localStorage.setItem('email', email);
-                localStorage.setItem('accessToken', response.data.accessToken);
-                localStorage.setItem('refreshToken', response.data.refreshToken);
-
-                navigate('/home');
-            }
-            else {
+                    navigate('/home');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
                 localStorage.clear();
                 if (response.status === 401) {
                     alert('Email e/ou Senha inválidos.');
                 }
-            }
-        } catch (e) {
-            alert('Falha ao fazer login! Tente nonamente!' + e);
+            });
+        } catch (ex) {
+            localStorage.clear();
+            console.error('Error:', ex);
+            alert('Falha ao fazer login! Tente novamente!' + ex);
         }
     };
 

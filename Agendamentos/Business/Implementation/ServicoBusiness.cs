@@ -30,7 +30,8 @@ namespace Agendamentos.Business.Implementation
                     DuracaoEstimada = service.DuracaoEstimada,
                     Preco = service.Preco,
                     CategoriaID = service.CategoriaID,
-                    CategoriaNome = service.Categoria.Nome
+                    CategoriaNome = service.Categoria.Nome,
+                    PrestadorID = service.PrestadorID
                 });
             });
 

@@ -33,21 +33,12 @@ namespace Agendamentos.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] AgendamentoVO agendamento)
+        public IActionResult Create([FromBody] AgendamentoDto dados)
         {
-            if (agendamento == null)
+            if (dados == null)
                 return BadRequest();
 
-            return Ok(_business.Insert(agendamento));
-        }
-
-        [HttpPost("/agendar")]
-        public IActionResult CreateNewAppointment([FromBody] AgendamentoDto agendamento)
-        {
-            if (agendamento == null)
-                return BadRequest();
-
-            return Ok(_business.InsertAgendamento(agendamento));
+            return Ok(_business.InsertAgendamento(dados));
         }
 
         [HttpPut]

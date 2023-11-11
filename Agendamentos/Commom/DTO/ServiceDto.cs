@@ -15,5 +15,7 @@
         public long CategoriaID { get; set; }
 
         public string CategoriaNome { get; set; }
+
+        public long PrestadorID { get; set; }
     }
 }

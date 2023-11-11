@@ -5,10 +5,12 @@ namespace Agendamentos.Data.Converter.Implementation
 {
     public class ServicoConverter : IParser<ServicoVO, Servico>, IParser<Servico, ServicoVO>
     {
-        private readonly CategoriaServicoConverter _converter;
+        private readonly CategoriaServicoConverter _converterCategoria;
+        private readonly UsuarioConverter _converterUsuario;
         public ServicoConverter()
         {
-            _converter = new CategoriaServicoConverter();
+            _converterCategoria = new CategoriaServicoConverter();
+            _converterUsuario = new UsuarioConverter();
         }
 
         public Servico Parser(ServicoVO origem)
@@ -21,9 +23,11 @@ namespace Agendamentos.Data.Converter.Implementation
                 Nome = origem.Nome,
                 Descricao = origem.Descricao,
                 CategoriaID = origem.CategoriaID,
+                PrestadorID = origem.PrestadorID,
                 DuracaoEstimada = origem.DuracaoEstimada,
                 Preco = origem.Preco,
-                Categoria = _converter.Parser(origem.Categoria)
+                Categoria = _converterCategoria.Parser(origem.Categoria),
+                Prestador = _converterUsuario.Parser(origem.Prestador)
             };
         }
 
@@ -37,9 +41,11 @@ namespace Agendamentos.Data.Converter.Implementation
                 Nome = origem.Nome,
                 Descricao = origem.Descricao,
                 CategoriaID = origem.CategoriaID,
+                PrestadorID = origem.PrestadorID,
                 DuracaoEstimada = origem.DuracaoEstimada,
                 Preco = origem.Preco,
-                Categoria = _converter.Parser(origem.Categoria)
+                Categoria = _converterCategoria.Parser(origem.Categoria),
+                Prestador = _converterUsuario.Parser(origem.Prestador)
             };
         }
 

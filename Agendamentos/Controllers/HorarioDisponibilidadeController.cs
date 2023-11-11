@@ -1,4 +1,5 @@
 ﻿using Agendamentos.Business;
+using Agendamentos.Commom.DTO;
 using Agendamentos.Data.VO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,16 +20,22 @@ namespace Agendamentos.Controllers
             _business = business;
         }
 
-        [HttpGet]
-        public IActionResult FindAll()
-        {
-            return Ok(_business.FindAll());
-        }
+        //[HttpGet]
+        //public IActionResult FindAll()
+        //{
+        //    return Ok(_business.FindAll());
+        //}
 
-        [HttpGet("{id}")]
-        public IActionResult Get(long id)
+        //[HttpGet("{id}")]
+        //public IActionResult Get(long id)
+        //{
+        //    return Ok(_business.Get(id));
+        //}
+        
+        [HttpGet]
+        public IActionResult Get([FromQuery] long PrestadorID,  string dataSecionada)
         {
-            return Ok(_business.Get(id));
+            return Ok(_business.GetHorario(PrestadorID, dataSecionada));
         }
 
         [HttpPost]

@@ -1,16 +1,18 @@
-﻿using Agendamentos.Data.Converter.Implementation;
+﻿using Agendamentos.Commom.DTO;
+using Agendamentos.Data.Converter.Implementation;
 using Agendamentos.Data.VO;
 using Agendamentos.Model;
 using Agendamentos.Repository;
+using System.Globalization;
 
 namespace Agendamentos.Business.Implementation
 {
     public class HorarioDisponibilidadeBusiness : IHorarioDisponibilidadeBusiness
     {
-        private readonly IRepository<HorarioDisponibilidade> _repository;
+        private readonly IHorarioDisponibilidadeRepository _repository;
         private readonly HorarioDisponibilidadeConverter _converter;
 
-        public HorarioDisponibilidadeBusiness(IRepository<HorarioDisponibilidade> repository)
+        public HorarioDisponibilidadeBusiness(IHorarioDisponibilidadeRepository repository)
         {
             _repository = repository;
             _converter = new HorarioDisponibilidadeConverter();
@@ -24,6 +26,16 @@ namespace Agendamentos.Business.Implementation
         public HorarioDisponibilidadeVO Get(long id)
         {
             return _converter.Parser(_repository.Get(id));
+        }
+
+        public HorarioDisponibilidadeVO GetHorario(long prestadorId, string dataSecionada)
+        {
+            var dataAtual = Convert.ToDateTime(dataSecionada);
+
+            CultureInfo cultura = new CultureInfo("pt-BR");
+            var diaDaSemanaEmPortugues = cultura.DateTimeFormat.GetDayName(dataAtual.DayOfWeek).Split('-');
+
+            return _converter.Parser(_repository.GetHorario(prestadorId, diaDaSemanaEmPortugues[0]));
         }
 
         public HorarioDisponibilidadeVO Insert(HorarioDisponibilidadeVO horarioDisponibilidade)

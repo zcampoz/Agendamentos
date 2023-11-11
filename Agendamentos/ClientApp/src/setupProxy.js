@@ -5,13 +5,14 @@ const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_H
   env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'http://localhost:14116';
 
 const context = [
-  "/api/agendamento",
-  "/api/avaliacao",
-  "/api/categoriaservico",
-  "/api/horariodisponibilidade",
-  "/api/servico",
-  "/api/usuario",
-  "/api/auth",
+    "/api/agendamento",
+    "/api/agendamento/agendar",
+    "/api/avaliacao",
+    "/api/categoriaservico",
+    "/api/horariodisponibilidade",
+    "/api/servico",
+    "/api/usuario",
+    "/api/auth",
 ];
 
 const onError = (err, req, resp, target) => {

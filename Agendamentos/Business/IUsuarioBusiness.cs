@@ -6,6 +6,8 @@ namespace Agendamentos.Business
     {
         public UsuarioVO Get(long id);
 
+        public UsuarioVO GetByEmail(string email);
+
         public List<UsuarioVO> FindAll();
 
         public UsuarioVO Insert(UsuarioVO usuario);
