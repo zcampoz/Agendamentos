@@ -5,13 +5,15 @@ namespace Agendamentos.Business
 {
     public interface IServicoBusiness
     {
-        public ServicoVO Get(long id);
+        public ServiceDto Get(long id);
+
+        public List<ServiceDto> GetByPrestadorId(long prestadorId);
 
         public List<ServiceDto> FindAll();
 
-        public ServicoVO Insert(ServicoVO servico);
+        public ServiceDto Insert(ServiceDto servico);
 
-        public ServicoVO Update(ServicoVO servico);
+        public ServiceDto Update(ServiceDto servico);
 
         public void Delete(long id);
     }

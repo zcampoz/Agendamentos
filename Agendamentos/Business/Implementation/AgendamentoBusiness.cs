@@ -28,6 +28,16 @@ namespace Agendamentos.Business.Implementation
             return _converter.Parser(_repository.Get(id));
         }
 
+        public List<AgendamentoVO> GetByClienteID(long clienteID)
+        {
+            return _converter.Parse(_repository.GetByClienteID(clienteID));
+        }
+
+        public List<AgendamentoVO> GetByPrestadorID(long prestadorID)
+        {
+            return _converter.Parse(_repository.GetByPrestadorID(prestadorID));
+        }
+
         public AgendamentoVO Insert(AgendamentoVO agendamento)
         {
             var entity = _converter.Parser(agendamento);

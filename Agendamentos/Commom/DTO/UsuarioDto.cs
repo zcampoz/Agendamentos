@@ -2,16 +2,16 @@
 
 namespace Agendamentos.Commom.DTO
 {
-    public class UsuarioDTO
+    public class UsuarioDto
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
 
-        public string Name { get; set; }
+        public string Nome { get; set; }
 
         public string Email { get; set; }
 
-        public string Senha { get; set; }
-
         public UsuarioEnum TipoUsuario { get; set; }
+
+        public bool Empresa { get; set; }
     }
 }

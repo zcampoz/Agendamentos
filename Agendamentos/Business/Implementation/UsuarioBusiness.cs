@@ -1,5 +1,5 @@
-﻿using Agendamentos.Data.Converter.Implementation;
-using Agendamentos.Data.VO;
+﻿using Agendamentos.Commom.DTO;
+using Agendamentos.Commom.Enum;
 using Agendamentos.Model;
 using Agendamentos.Repository;
 
@@ -8,46 +8,77 @@ namespace Agendamentos.Business.Implementation
     public class UsuarioBusiness : IUsuarioBusiness
     {
         private readonly IUsuarioRepository _repository;
-        private readonly UsuarioConverter _converter; 
 
         public UsuarioBusiness(IUsuarioRepository repository)
         {
             _repository = repository;
-            _converter = new UsuarioConverter();
         }
 
-        public List<UsuarioVO> FindAll()
+        public List<UsuarioDto> FindAll()
         {
-            return _converter.Parse(_repository.FindAll());
+            return this.ParseUser(_repository.FindAll());
         }
 
-        public UsuarioVO Get(long id)
+        public UsuarioDto Get(long id)
         {
-            return _converter.Parser(_repository.Get(id));
+            return this.ConvertToUsuarioDto(_repository.Get(id));            
         }
 
-        public UsuarioVO GetByEmail(string email)
+        public UsuarioDto GetByEmail(string email)
         {
-            return _converter.Parser(_repository.GetByEmail(email));
+            return this.ConvertToUsuarioDto(_repository.GetByEmail(email));
         }
 
-        public UsuarioVO Insert(UsuarioVO usuario)
+        public UsuarioDto Update(UsuarioDto usuario)
         {
-            var entity = _converter.Parser(usuario);
-            entity = _repository.Insert(entity);
-            return _converter.Parser(entity);
-        }
-
-        public UsuarioVO Update(UsuarioVO usuario)
-        {
-            var entity = _converter.Parser(usuario);
+            var entity = this.ConvertToUsuario(usuario);
             entity = _repository.Update(entity);
-            return _converter.Parser(entity);
+            return this.ConvertToUsuarioDto(entity);
         }
 
         public void Delete(long id)
         {
             _repository.Delete(id);
+        }
+
+        private UsuarioDto ConvertToUsuarioDto(Usuario user)
+        {
+            Enum.TryParse(user.TipoUsuario, out UsuarioEnum enumValue);
+            var empresa = enumValue.Equals(UsuarioEnum.prestador);
+
+            return new UsuarioDto()
+            {
+                Id = user.ID,
+                Email = user.Email,
+                Nome = user.Nome,
+                TipoUsuario = enumValue,
+                Empresa = empresa
+            };
+        }
+
+        private Usuario ConvertToUsuario(UsuarioDto user)
+        {
+            return new Usuario()
+            {
+                ID = user.Id,
+                Email = user.Email,
+                Nome = user.Nome,
+                TipoUsuario = user.TipoUsuario.ToString()
+            };
+        }
+
+        public List<UsuarioDto> ParseUser(List<Usuario> origem)
+        {
+            if (origem == null) return null;
+
+            return origem.Select(item => ConvertToUsuarioDto(item)).ToList();
+        }
+
+        public List<Usuario> ParseUser(List<UsuarioDto> origem)
+        {
+            if (origem == null) return null;
+
+            return origem.Select(item => ConvertToUsuario(item)).ToList();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Agendamentos.Model;
+﻿using Agendamentos.Commom.DTO;
+using Agendamentos.Model;
 
 namespace Agendamentos.Repository
 {
@@ -13,5 +14,7 @@ namespace Agendamentos.Repository
         public Servico Update(Servico servico);
 
         public void Delete(long id);
+
+        public List<Servico> GetByPrestadorId(long prestadorId);
     }
 }

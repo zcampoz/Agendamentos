@@ -1,4 +1,5 @@
 ﻿using Agendamentos.Business;
+using Agendamentos.Commom.DTO;
 using Agendamentos.Data.VO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,26 +28,18 @@ namespace Agendamentos.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(long id)
         {
-            return Ok(_business.Get(id));
+            var teste = _business.Get(id);
+            return Ok(teste);
         }
         
         [HttpGet("email/{email}")]
         public IActionResult Get(string email)
         {
-            return Ok(_business.GetByEmail(email).ID);
-        }
-
-        [HttpPost]
-        public IActionResult Create([FromBody] UsuarioVO usuario)
-        {
-            if (usuario == null)
-                return BadRequest();
-
-            return Ok(_business.Insert(usuario));
+            return Ok(_business.GetByEmail(email).Id);
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] UsuarioVO usuario)
+        public IActionResult Update([FromBody] UsuarioDto usuario)
         {
             if (usuario == null)
                 return BadRequest();

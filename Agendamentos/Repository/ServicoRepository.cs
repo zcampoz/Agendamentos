@@ -1,4 +1,5 @@
-﻿using Agendamentos.Model;
+﻿using Agendamentos.Commom.DTO;
+using Agendamentos.Model;
 using Agendamentos.Model.Base;
 using Agendamentos.Model.Context;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +32,15 @@ namespace Agendamentos.Repository
                 .Include(x => x.Categoria)
                 .Include(x => x.Prestador)
                 .FirstOrDefault(x => x.ID.Equals(id));
+        }
+
+        public List<Servico> GetByPrestadorId(long prestadorId)
+        {
+            return _context.Servicos
+                .Include(x => x.Categoria)
+                .Include(x => x.Prestador)
+                .Where(x => x.PrestadorID.Equals(prestadorId))
+                .ToList();
         }
 
         public Servico Insert(Servico item)

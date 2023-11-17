@@ -32,6 +32,20 @@ namespace Agendamentos.Controllers
             return Ok(_business.Get(id));
         }
 
+        [HttpGet("Prestador/{prestadorID}")]
+        public IActionResult GetByPrestadorID(long prestadorID)
+        {
+            var teste = _business.GetByPrestadorID(prestadorID);
+            return Ok(teste);
+        }
+
+        [HttpGet("Cliente/{clienteID}")]
+        public IActionResult GetByClienteID(long clienteID)
+        {
+            var teste = _business.GetByClienteID(clienteID);
+            return Ok(teste);
+        }
+
         [HttpPost]
         public IActionResult Create([FromBody] AgendamentoDto dados)
         {

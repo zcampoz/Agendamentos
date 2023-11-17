@@ -30,6 +30,22 @@ namespace Agendamentos.Repository
             return dataSet.SingleOrDefault(x => x.ID.Equals(id));
         }
 
+        public List<Agendamento> GetByClienteID(long clienteID)
+        {
+            return _context.Agendamentos
+                .Include(s => s.Servico)
+                .Where(x => x.ClienteID.Equals(clienteID))
+                .ToList();
+        }
+
+        public List<Agendamento> GetByPrestadorID(long prestadorID)
+        {
+            return _context.Agendamentos
+                .Include(s => s.Servico)
+                .Where(x => x.PrestadorID.Equals(prestadorID))
+                .ToList();
+        }
+
         public Agendamento Insert(Agendamento item)
         {
             try

@@ -1,5 +1,5 @@
 ﻿using Agendamentos.Business;
-using Agendamentos.Data.VO;
+using Agendamentos.Commom.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,8 +31,14 @@ namespace Agendamentos.Controllers
             return Ok(_business.Get(id));
         }
 
+        [HttpGet("Prestador/{PrestadorID}")]
+        public IActionResult GetByPrestadorId(long prestadorID)
+        {
+            return Ok(_business.GetByPrestadorId(prestadorID));
+        }
+
         [HttpPost]
-        public IActionResult Create([FromBody] ServicoVO servico)
+        public IActionResult Create([FromBody] ServiceDto servico)
         {
             if (servico == null)
                 return BadRequest();
@@ -41,7 +47,7 @@ namespace Agendamentos.Controllers
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] ServicoVO servico)
+        public IActionResult Update([FromBody] ServiceDto servico)
         {
             if (servico == null)
                 return BadRequest();

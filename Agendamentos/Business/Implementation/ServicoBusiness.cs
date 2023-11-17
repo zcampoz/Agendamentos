@@ -1,6 +1,4 @@
 ﻿using Agendamentos.Commom.DTO;
-using Agendamentos.Data.Converter.Implementation;
-using Agendamentos.Data.VO;
 using Agendamentos.Repository;
 
 namespace Agendamentos.Business.Implementation
@@ -8,58 +6,86 @@ namespace Agendamentos.Business.Implementation
     public class ServicoBusiness : IServicoBusiness
     {
         private readonly IServicoRepository _repository;
-        private readonly ServicoConverter _converter;
 
         public ServicoBusiness(IServicoRepository repository)
         {
             _repository = repository;
-            _converter = new ServicoConverter();
         }
 
         public List<ServiceDto> FindAll()
         {
-            var servicesDto = new List<ServiceDto>();
-            var services = _repository.FindAll();
-
-            services.ForEach(service => {
-                servicesDto.Add(new ServiceDto() 
-                { 
-                    Id = service.ID,
-                    Nome = service.Nome,
-                    Descricao = service.Descricao,
-                    DuracaoEstimada = service.DuracaoEstimada,
-                    Preco = service.Preco,
-                    CategoriaID = service.CategoriaID,
-                    CategoriaNome = service.Categoria.Nome,
-                    PrestadorID = service.PrestadorID
-                });
-            });
-
-            return servicesDto;
+            return this.ParseService(_repository.FindAll());
         }
 
-        public ServicoVO Get(long id)
+        public ServiceDto Get(long id)
         {
-            return _converter.Parser(_repository.Get(id));
+            return this.ConvertToServiceDto(_repository.Get(id));
         }
 
-        public ServicoVO Insert(ServicoVO servico)
+        public List<ServiceDto> GetByPrestadorId(long prestadorId)
         {
-            var entity = _converter.Parser(servico);
+            return this.ParseService(_repository.GetByPrestadorId(prestadorId));
+        }
+
+        public ServiceDto Insert(ServiceDto servico)
+        {
+            var entity = this.ConvertToServico(servico);
             entity = _repository.Insert(entity);
-            return _converter.Parser(entity);
+            return this.ConvertToServiceDto(entity);
         }
 
-        public ServicoVO Update(ServicoVO servico)
+        public ServiceDto Update(ServiceDto servico)
         {
-            var entity = _converter.Parser(servico);
+            var entity = this.ConvertToServico(servico);
             entity = _repository.Update(entity);
-            return _converter.Parser(entity);
+            return this.ConvertToServiceDto(entity);
         }
 
         public void Delete(long id)
         {
             _repository.Delete(id);
+        }
+
+        private ServiceDto ConvertToServiceDto(Servico servico)
+        {
+            return new ServiceDto()
+            {
+                Id = servico.ID,
+                Nome = servico.Nome,
+                Descricao = servico.Descricao,
+                Preco = servico.Preco,
+                DuracaoEstimada = servico.DuracaoEstimada,
+                CategoriaID = servico.CategoriaID,
+                CategoriaNome = servico.Categoria.Nome,
+                PrestadorID = servico.PrestadorID                
+            };
+        }
+        private Servico ConvertToServico(ServiceDto servico)
+        {
+            return new Servico()
+            {
+                ID = servico.Id,
+                Nome = servico.Nome,
+                Descricao = servico.Descricao,
+                Preco = servico.Preco,
+                DuracaoEstimada = servico.DuracaoEstimada,
+                CategoriaID = servico.CategoriaID,
+                PrestadorID = servico.PrestadorID                
+            };
+        }
+
+        public List<ServiceDto> ParseService(List<Servico> origem)
+        {
+            if (origem == null) return null;
+
+            return origem.Select(item => ConvertToServiceDto(item)).ToList();
+        }
+
+        public List<Servico> ParseService(List<ServiceDto> origem)
+        {
+            if (origem == null) return null;
+
+            return origem.Select(item => ConvertToServico(item)).ToList();
         }
     }
 }
