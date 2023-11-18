@@ -64,6 +64,15 @@ namespace Agendamentos.Controllers
             return Ok(_business.Update(agendamento));
         }
 
+        [HttpPut("UpdateStatus")]
+        public IActionResult UpdateStatus([FromBody] AgendamentoStatusDto agendamento)
+        {
+            if (agendamento == null)
+                return BadRequest();
+
+            return Ok(_business.UpdateStatus(agendamento));
+        }
+
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {

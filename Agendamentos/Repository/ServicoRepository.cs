@@ -1,6 +1,4 @@
 ﻿using Agendamentos.Commom.DTO;
-using Agendamentos.Model;
-using Agendamentos.Model.Base;
 using Agendamentos.Model.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -43,13 +41,21 @@ namespace Agendamentos.Repository
                 .ToList();
         }
 
-        public Servico Insert(Servico item)
+        public void Insert(ServiceRequestDto item)
         {
             try
             {
-                _context.Add(item);
+                var service = new Servico() 
+                { 
+                    Nome = item.Nome,
+                    Descricao = item.Descricao,
+                    DuracaoEstimada = item.DuracaoEstimada,
+                    Preco = item.Preco,
+                    CategoriaID = item.CategoriaID,
+                    PrestadorID = item.PrestadorID
+                };
+                _context.Servicos.Add(service);
                 _context.SaveChanges();
-                return item;
             }
             catch (Exception)
             {
@@ -83,11 +89,10 @@ namespace Agendamentos.Repository
         public void Delete(long id)
         {
             var result = dataSet.FirstOrDefault(x => x.ID == id);
-            if (result == null)
+            if (result != null)
             {
                 try
                 {
-
                     dataSet.Remove(result);
                     _context.SaveChanges();
                 }
@@ -96,11 +101,6 @@ namespace Agendamentos.Repository
                     throw;
                 }
             }
-        }
-
-        private bool Exists(long id)
-        {
-            return dataSet.Any(x => x.ID == id);
         }
     }
 }

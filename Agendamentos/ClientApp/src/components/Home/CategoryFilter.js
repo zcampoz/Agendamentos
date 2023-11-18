@@ -18,14 +18,8 @@ class CategoryFilter extends Component {
         };
 
         api.get('categoriaservico', config)
-        .then((response) => {
-            this.setState({ categories: response.data });
-            //setLoading(false);
-        })
-        .catch((error) => {
-            //setLoading(false);
-            console.error('Erro ao carregar categorias de serviço:', error);
-        });
+        .then((response) => this.setState({ categories: response.data }))
+        .catch((error) => console.error('Erro ao carregar categorias de serviço:', error));
     }
 
     handleFilterChange = (event) => {

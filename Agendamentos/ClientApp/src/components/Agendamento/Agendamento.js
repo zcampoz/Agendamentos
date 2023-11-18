@@ -10,7 +10,7 @@ export const Agendamento = () => {
 
     const location = useLocation();
     const navigate = useNavigate();
-    const selectedService = location.state?.selectedService; // Utilizando optional chaining para evitar erros
+    const selectedService = location.state?.selectedService; 
 
     const accessToken = localStorage.getItem('accessToken');
     const userId = parseInt(localStorage.getItem('userId'), 10);

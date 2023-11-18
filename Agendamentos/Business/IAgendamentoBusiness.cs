@@ -20,5 +20,7 @@ namespace Agendamentos.Repository
         public List<AgendamentoVO> GetByClienteID(long clienteID);
 
         public List<AgendamentoVO> GetByPrestadorID(long prestadorID);
+
+        public AgendamentoVO UpdateStatus(AgendamentoStatusDto agendamento);
     }
 }

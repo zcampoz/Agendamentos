@@ -1,0 +1,17 @@
+﻿namespace Agendamentos.Commom.DTO
+{
+    public class ServiceRequestDto
+    {
+        public string Nome { get; set; }
+
+        public string Descricao { get; set; }
+
+        public decimal Preco { get; set; }
+
+        public int DuracaoEstimada { get; set; }
+
+        public long CategoriaID { get; set; }
+
+        public long PrestadorID { get; set; }
+    }
+}

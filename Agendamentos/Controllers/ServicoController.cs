@@ -38,12 +38,14 @@ namespace Agendamentos.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] ServiceDto servico)
+        public IActionResult Create([FromBody] ServiceRequestDto servico)
         {
             if (servico == null)
                 return BadRequest();
 
-            return Ok(_business.Insert(servico));
+            _business.Insert(servico);
+
+            return Ok();
         }
 
         [HttpPut]

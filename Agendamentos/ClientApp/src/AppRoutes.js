@@ -2,6 +2,7 @@ import { Agendamento } from "./components/Agendamento/Agendamento";
 import { Login } from "./components/Login/Login";
 import { Registro } from "./components/Login/Registro";
 import { Perfil } from "./components/Perfil/Perfil";
+import { AdicionarServico } from "./components/Perfil/AdicionarServico";
 import { Home } from "./components/Home/Home";
 
 const AppRoutes = [
@@ -28,6 +29,10 @@ const AppRoutes = [
     {
         path: '/registro',
         element: <Registro />
+    },
+    {
+        path: '/add-service',
+        element: <AdicionarServico />
     },
 ];
 

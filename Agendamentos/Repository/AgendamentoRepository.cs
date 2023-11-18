@@ -1,4 +1,6 @@
-﻿using Agendamentos.Model;
+﻿using Agendamentos.Commom.DTO;
+using Agendamentos.Commom.Enum;
+using Agendamentos.Model;
 using Agendamentos.Model.Base;
 using Agendamentos.Model.Context;
 using Microsoft.EntityFrameworkCore;
@@ -81,6 +83,26 @@ namespace Agendamentos.Repository
             {
                 return null;
             }
+        }
+
+        public Agendamento UpdateStatus(AgendamentoStatusDto item)
+        {
+            var result = _context.Agendamentos.FirstOrDefault(x => x.ID == item.Id);
+            if (result != null)
+            {
+                try
+                {
+                    result.EstadoAgendamento = ((EstadoAgendamentoEnum)item.NovoStatus).ToString();
+                    _context.SaveChanges();
+                    return result;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            else
+                return null;
         }
 
         public void Delete(long id)

@@ -11,7 +11,7 @@ namespace Agendamentos.Business
 
         public List<ServiceDto> FindAll();
 
-        public ServiceDto Insert(ServiceDto servico);
+        public void Insert(ServiceRequestDto servico);
 
         public ServiceDto Update(ServiceDto servico);
 

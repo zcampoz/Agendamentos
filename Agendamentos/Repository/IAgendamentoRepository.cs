@@ -1,4 +1,5 @@
-﻿using Agendamentos.Model;
+﻿using Agendamentos.Commom.DTO;
+using Agendamentos.Model;
 
 namespace Agendamentos.Repository
 {
@@ -17,5 +18,7 @@ namespace Agendamentos.Repository
         public List<Agendamento> GetByClienteID(long clienteID);
 
         public List<Agendamento> GetByPrestadorID(long prestadorID);
+
+        public Agendamento UpdateStatus(AgendamentoStatusDto item);
     }
 }

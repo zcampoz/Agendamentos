@@ -27,11 +27,9 @@ namespace Agendamentos.Business.Implementation
             return this.ParseService(_repository.GetByPrestadorId(prestadorId));
         }
 
-        public ServiceDto Insert(ServiceDto servico)
+        public void Insert(ServiceRequestDto servico)
         {
-            var entity = this.ConvertToServico(servico);
-            entity = _repository.Insert(entity);
-            return this.ConvertToServiceDto(entity);
+            _repository.Insert(servico);
         }
 
         public ServiceDto Update(ServiceDto servico)

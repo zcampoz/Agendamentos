@@ -57,6 +57,12 @@ namespace Agendamentos.Business.Implementation
             return _converter.Parser(entity);
         }
 
+        public AgendamentoVO UpdateStatus(AgendamentoStatusDto agendamento)
+        {
+            var entity = _repository.UpdateStatus(agendamento);
+            return _converter.Parser(entity);
+        }
+
         public void Delete(long id)
         {
             _repository.Delete(id);

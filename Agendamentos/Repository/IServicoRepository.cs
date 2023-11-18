@@ -9,7 +9,7 @@ namespace Agendamentos.Repository
 
         public List<Servico> FindAll();
 
-        public Servico Insert(Servico servico);
+        public void Insert(ServiceRequestDto servico);
 
         public Servico Update(Servico servico);
 
