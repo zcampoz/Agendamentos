@@ -19,21 +19,9 @@ namespace Agendamentos.Controllers
             _logger = logger;
             _business = business;
         }
-
-        //[HttpGet]
-        //public IActionResult FindAll()
-        //{
-        //    return Ok(_business.FindAll());
-        //}
-
-        //[HttpGet("{id}")]
-        //public IActionResult Get(long id)
-        //{
-        //    return Ok(_business.Get(id));
-        //}
         
         [HttpGet]
-        public IActionResult Get([FromQuery] long PrestadorID,  string dataSecionada)
+        public IActionResult Get(long PrestadorID,  string dataSecionada)
         {
             return Ok(_business.GetHorario(PrestadorID, dataSecionada));
         }

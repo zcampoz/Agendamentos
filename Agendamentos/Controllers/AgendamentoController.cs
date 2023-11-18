@@ -32,6 +32,12 @@ namespace Agendamentos.Controllers
             return Ok(_business.Get(id));
         }
 
+        [HttpGet("agendados")]
+        public IActionResult GetAgendados(long prestadorID, string dataSelecionada)
+        {
+            return Ok(_business.GetAgendados(prestadorID, dataSelecionada));
+        }
+
         [HttpGet("Prestador/{prestadorID}")]
         public IActionResult GetByPrestadorID(long prestadorID)
         {

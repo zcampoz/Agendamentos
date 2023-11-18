@@ -48,6 +48,16 @@ namespace Agendamentos.Repository
                 .ToList();
         }
 
+        public List<Agendamento> GetAgendados(long prestadorID, DateTime dataInicio, DateTime dataFim)
+        {
+            return _context.Agendamentos
+                .Where(x => x.PrestadorID.Equals(prestadorID) 
+                    && x.EstadoAgendamento.Equals(EstadoAgendamentoEnum.pendente.ToString())
+                    && x.DataHora >= dataInicio
+                    && x.DataHora <= dataFim)
+                .ToList();
+        }
+
         public Agendamento Insert(Agendamento item)
         {
             try

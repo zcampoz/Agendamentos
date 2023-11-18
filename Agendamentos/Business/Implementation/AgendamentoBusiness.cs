@@ -4,6 +4,7 @@ using Agendamentos.Data.Converter.Implementation;
 using Agendamentos.Data.VO;
 using Agendamentos.Model;
 using Agendamentos.Repository;
+using System.Globalization;
 
 namespace Agendamentos.Business.Implementation
 {
@@ -36,6 +37,14 @@ namespace Agendamentos.Business.Implementation
         public List<AgendamentoVO> GetByPrestadorID(long prestadorID)
         {
             return _converter.Parse(_repository.GetByPrestadorID(prestadorID));
+        }
+
+        public List<AgendamentoVO> GetAgendados(long prestadorID, string dataSelecionada)
+        {
+            var dataInicio = Convert.ToDateTime(dataSelecionada).Date; 
+            var dataFim = Convert.ToDateTime(dataSelecionada).Date.AddDays(1).AddTicks(-1); 
+
+            return _converter.Parse(_repository.GetAgendados(prestadorID, dataInicio, dataFim));
         }
 
         public AgendamentoVO Insert(AgendamentoVO agendamento)

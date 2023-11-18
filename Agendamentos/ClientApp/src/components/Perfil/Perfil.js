@@ -4,16 +4,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { format } from 'date-fns';
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { api } from '../../services/api';
-import { MeuModal } from './AdicionarServico';
 import { Link } from 'react-router-dom';
+import { api } from '../../services/api';
 
 export const Perfil = () => {
     const [usuario, setUsuario] = useState({});
     const [agendamentos, setAgendamentos] = useState([]);
     const [empresa, setEmpresa] = useState(false);
     const [servicos, setServicos] = useState([]);
-    //const [showServicoModal, setShowServicoModal] = useState(false);
 
     const accessToken = localStorage.getItem('accessToken');
     const userId = parseInt(localStorage.getItem('userId'), 10);
@@ -117,20 +115,6 @@ export const Perfil = () => {
             alert(`Erro ao excluir o serviço id: ${servicoId}!`);
         });
     };
-
-    const adicionarDadosServico = () => {
-        // Lógica para adicionar dados do serviço
-        console.log('Adicionar dados do serviço');
-    };
-
-    //const handleShowServicoModal = () => setShowServicoModal(true);
-    //const handleCloseServicoModal = () => setShowServicoModal(false);
-
-    const [mostrarModal, setMostrarModal] = useState(false);
-
-    const handleMostrarModal = () => setMostrarModal(true);
-
-    const handleFecharModal = () => setMostrarModal(false);
 
     return (
         <>
@@ -243,10 +227,6 @@ export const Perfil = () => {
                             <p>Nenhum dado de serviço disponível.</p>
                         )}
 
-                        <button className="btn btn-primary" onClick={handleMostrarModal}>
-                            Adicionar Novo Serviço
-                        </button>
-
                         <Link to="/add-service">
                             <button className="btn btn-primary">Adicionar Serviço</button>
                         </Link>
@@ -257,234 +237,3 @@ export const Perfil = () => {
         </>
     );
 };
-
-//export const NovoServicoModal = ({ show, handleClose, adicionarDadosServico }) => {
-//    const [nomeServico, setNomeServico] = useState('');
-
-//    const handleAdicionarServico = () => {
-//        // Faça a lógica necessária para adicionar o serviço com o nomeServico
-//        adicionarDadosServico(nomeServico);
-
-//        // Limpe o estado e feche a modal
-//        //setNomeServico('');
-//        handleClose();
-//    };
-
-//    return (
-//        <Modal show={show} onHide={handleClose}>
-//            <Modal.Header closeButton>
-//                <Modal.Title>Adicionar Novo Serviço</Modal.Title>
-//            </Modal.Header>
-//            <Modal.Body>
-//                <Form>
-//                    <Form.Group controlId="formNomeServico">
-//                        <Form.Label>Nome do Serviço</Form.Label>
-//                        <Form.Control
-//                            type="text"
-//                            placeholder="Digite o nome do serviço"
-//                            value={nomeServico}
-//                            onChange={(e) => setNomeServico(e.target.value)}
-//                        />
-//                    </Form.Group>
-//                </Form>
-//            </Modal.Body>
-//            <Modal.Footer>
-//                <Button variant="secondary" onClick={handleClose}>
-//                    Fechar
-//                </Button>
-//                <Button variant="primary" onClick={handleAdicionarServico}>
-//                    Adicionar Serviço
-//                </Button>
-//            </Modal.Footer>
-//        </Modal>
-//    );
-//};
-
-
-//{categorias.length > 0 ? (
-                        //    <>
-                        //        <h3>Categorias de Serviço</h3>
-                        //        <table className="table">
-                        //            <thead>
-                        //                <tr>
-                        //                    <th>ID</th>
-                        //                    <th>Nome</th>
-                        //                </tr>
-                        //            </thead>
-                        //            <tbody>
-                        //                {categorias.map(categoria => (
-                        //                    <tr key={categoria.id}>
-                        //                        <td>{categoria.id}</td>
-                        //                        <td>{categoria.nome}</td>
-                        //                    </tr>
-                        //                ))}
-                        //            </tbody>
-                        //        </table>
-                        //    </>
-                        //) : (
-                        //    <p>Nenhum dado de categoria disponível.</p>
-                        //)}
-                        //<button className="btn btn-primary" onClick={adicionarDadosCategoria}>
-                        //    Adicionar Nova Categoria
-                        //</button>
-
-//    return (
-//        <>
-//            <Helmet>
-//                <meta charSet="utf-8" />
-//            </Helmet>
-//            <div>
-//                <h2>Usuário</h2>
-//                <p>Nome: {usuario.nome}</p>
-//                <p>Email: {usuario.email}</p>
-//                <p>Perfil: {usuario.empresa ? 'Empresa' : 'Cliente'}</p>
-//                <>
-//                {agendamentos.length > 0 ? (
-//                    <>
-//                    <h3>Agendamentos</h3>
-//                    <table className="table">
-//                        <thead>
-//                            <tr>
-//                                <th>ID</th>
-//                                <th>Data e Hora</th>
-//                                <th>Serviço</th>
-//                                <th>Status</th>
-//                                <th>Ações</th>
-//                            </tr>
-//                        </thead>
-//                        <tbody>
-//                            {agendamentos.map(agendamento => (
-//                                <tr key={agendamento.id}>
-//                                    <td>{agendamento.id}</td>
-//                                    <td>{format(new Date(agendamento.dataHora), 'dd/MM/yyyy HH:mm')}</td>
-//                                    <td>{agendamento.servico.nome}</td>
-//                                    <td>{getStatusByIndex(agendamento.estadoAgendamento)}</td>
-//                                    <td>
-//                                        <div className="btn-group" role="group" aria-label="Ações">
-//                                            <button
-//                                                type="button"
-//                                                className="btn btn-primary"
-//                                                title="Confirmar"
-//                                                onClick={() => confirmarAgendamento(agendamento.id)}
-//                                            >
-//                                                <FontAwesomeIcon icon={faThumbsUp} />
-//                                            </button>
-//                                            <button
-//                                                type="button"
-//                                                className="btn btn-success"
-//                                                title="Concluir"
-//                                                onClick={() => concluirAgendamento(agendamento.id)}
-//                                            >
-//                                                <FontAwesomeIcon icon={faCheck} />
-//                                            </button>
-//                                            <button
-//                                                type="button"
-//                                                className="btn btn-danger"
-//                                                title="Cancelar"
-//                                                onClick={() => cancelarAgendamento(agendamento.id)}
-//                                            >
-//                                                <FontAwesomeIcon icon={faTrashAlt} />
-//                                            </button>
-//                                        </div>
-//                                    </td>
-//                                </tr>
-//                            ))}
-//                        </tbody>
-//                    </table>
-//                    </>
-//                ) : (
-//                    <p>Nenhum agendamento disponível.</p>
-//                )}
-
-//                {empresa && (
-//                    <>
-//                        {servicos.length > 0 ? (
-//                            <>
-//                            <h3>Serviços da Empresa</h3>
-//                            <table className="table">
-//                                <thead>
-//                                    <tr>
-//                                        <th>ID</th>
-//                                        <th>Nome</th>
-//                                        <th>Descrição</th>
-//                                        <th>Preço</th>
-//                                        <th>Duração Estimada</th>
-//                                    </tr>
-//                                </thead>
-//                                <tbody>
-//                                    {servicos.map(servico => (
-//                                        <tr key={servico.id}>
-//                                            <td>{servico.id}</td>
-//                                            <td>{servico.nome}</td>
-//                                            <td>{servico.descricao}</td>
-//                                            <td>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(servico.preco) }</td>
-//                                            <td>{servico.duracaoEstimada}</td>
-//                                        </tr>
-//                                    ))}
-//                                </tbody>
-//                            </table>
-//                            </>
-//                        ) : (
-//                            <p>Nenhum dado de serviço disponível.</p>
-//                        )}
-//                        <button className="btn btn-primary" onClick={handleShowServicoModal}>
-//                            Adicionar Novo Serviço
-//                        </button>
-
-//                        <Modal show={showServicoModal} onHide={handleCloseServicoModal}>
-//                            <Modal.Header closeButton>
-//                                <Modal.Title>Adicionar Novo Serviço</Modal.Title>
-//                            </Modal.Header>
-//                            <Modal.Body>
-//                                <Form>
-//                                    {/* Adicione campos de formulário para os dados do serviço */}
-//                                    <Form.Group controlId="formNomeServico">
-//                                        <Form.Label>Nome do Serviço</Form.Label>
-//                                        <Form.Control type="text" placeholder="Digite o nome do serviço" />
-//                                    </Form.Group>
-//                                    {/* Adicione outros campos conforme necessário */}
-//                                </Form>
-//                            </Modal.Body>
-//                            <Modal.Footer>
-//                                <Button variant="secondary" onClick={handleCloseServicoModal}>
-//                                    Fechar
-//                                </Button>
-//                                <Button variant="primary" onClick={adicionarDadosServico}>
-//                                    Adicionar Serviço
-//                                </Button>
-//                            </Modal.Footer>
-//                        </Modal>
-
-//                        {categorias.length > 0 ? (
-//                            <>
-//                                <h3>Categorias de Serviço</h3>
-//                                <table className="table">
-//                                    <thead>
-//                                        <tr>
-//                                            <th>ID</th>
-//                                            <th>Nome</th>
-//                                        </tr>
-//                                    </thead>
-//                                    <tbody>
-//                                        {categorias.map(categoria => (
-//                                            <tr key={categoria.id}>
-//                                                <td>{categoria.id}</td>
-//                                                <td>{categoria.nome}</td>
-//                                            </tr>
-//                                        ))}
-//                                    </tbody>
-//                                </table>
-//                            </>
-//                        ) : (
-//                            <p>Nenhum dado de categoria disponível.</p>
-//                        )}
-//                        <button className="btn btn-primary" onClick={adicionarDadosCategoria}>
-//                            Adicionar Nova Categoria
-//                        </button>
-//                    </>
-//                )}
-//                </>
-//            </div>
-//        </>
-//    );
-//};

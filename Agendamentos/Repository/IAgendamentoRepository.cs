@@ -20,5 +20,7 @@ namespace Agendamentos.Repository
         public List<Agendamento> GetByPrestadorID(long prestadorID);
 
         public Agendamento UpdateStatus(AgendamentoStatusDto item);
+
+        public List<Agendamento> GetAgendados(long prestadorID, DateTime dataInicio, DateTime dataFim);
     }
 }

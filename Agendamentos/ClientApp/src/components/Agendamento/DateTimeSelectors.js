@@ -24,26 +24,41 @@ export const DateSelector = ({ onDateSelect }) => {
     );
 }
 
-export const TimeSlotSelector = ({ horarios, selectedTimeSlot, onTimeSlotSelect }) => {
+export const TimeSlotSelector = ({ selectedDate, selectedService, agendadosList, horarios, selectedTimeSlot, onTimeSlotSelect }) => {
     const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
 
     useEffect(() => {
-        fetchAvailableTimeSlots(horarios.horaInicio, horarios.horaFim);
-    }, [horarios]);
+        console.log('Horários atualizados:', horarios);
+        console.log('Horários agendadosList:', agendadosList);
+        fetchAvailableTimeSlots(horarios.horaInicio, horarios.horaFim, agendadosList, selectedDate);
+    }, [horarios, agendadosList, selectedDate]);
 
-    const fetchAvailableTimeSlots = (startDate, endDate) => {
-        const serviceDuration = 30; // Defina a duração do serviço conforme necessário
-        const timeSlots = splitTimeSlots(startDate, endDate, serviceDuration);
+    const fetchAvailableTimeSlots = (startDate, endDate, agendadosList, selectedDate) => {
+        const serviceDuration = selectedService.duracaoEstimada; 
+        const agendados = agendadosList.map((agendamento) => new Date(agendamento.dataHora).toLocaleTimeString());
+        const timeSlots = splitTimeSlots(startDate, endDate, serviceDuration, agendados, selectedDate);
+        
         setAvailableTimeSlots(timeSlots);
     };
 
-    const splitTimeSlots = (startDate, endDate, serviceDuration) => {
-        const timeSlots = [];
-        let currentTime = new Date(startDate);
+    const splitTimeSlots = (startDate, endDate, serviceDuration, agendados, selectedDate) => {
+        const timeSlots = []; 
+        const referenceDate = selectedDate;
 
-        while (currentTime < new Date(endDate)) {
-            var timeSlot = new Date(currentTime);
-            timeSlots.push(timeSlot.toLocaleTimeString());
+        let currentTime = new Date(`${referenceDate}T${startDate}`);
+        const endTime = new Date(`${referenceDate}T${endDate}`);
+
+        while (currentTime < endTime) {
+            const timeSlot = new Date(currentTime);
+            const timeSlotString = timeSlot.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const isAgendado = agendados.includes(timeSlotString);
+
+            timeSlots.push({
+                time: timeSlotString,
+                checked: isAgendado,
+                disabled: isAgendado,
+            });
+
             currentTime = new Date(currentTime.getTime() + serviceDuration * 60 * 1000);
         }
 
@@ -51,27 +66,32 @@ export const TimeSlotSelector = ({ horarios, selectedTimeSlot, onTimeSlotSelect 
     };
 
     const handleTimeSlotSelect = (timeSlot) => {
-        onTimeSlotSelect(timeSlot);
+        onTimeSlotSelect(timeSlot.time);
     };
 
     return (
         <div>
-            <h3>Selecione um Horário</h3>
-            <ul>
-                {availableTimeSlots.map((timeSlot) => (
-                    <li key={timeSlot}>
-                        <label>
-                            <input
-                                type="checkbox"
-                                value={timeSlot}
-                                checked={selectedTimeSlot === timeSlot}
-                                onChange={() => handleTimeSlotSelect(timeSlot)}
-                            />
-                            {timeSlot}
-                        </label>
-                    </li>
-                ))}
-            </ul>
+            {availableTimeSlots.length > 0 && (
+                <>
+                    <h3>Selecione um Horário</h3>
+                    <div>
+                        {availableTimeSlots.map((timeSlot) => (
+                            <div key={timeSlot}>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        value={timeSlot}
+                                        checked={selectedTimeSlot === timeSlot}
+                                        onChange={() => handleTimeSlotSelect(timeSlot)}
+                                        disabled={timeSlot.disabled}
+                                    />
+                                    {timeSlot.time}
+                                </label>
+                            </div>
+                        ))}
+                    </div>
+                </>
+            )}
         </div>
     );
 }
