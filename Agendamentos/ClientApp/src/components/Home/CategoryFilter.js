@@ -10,14 +10,7 @@ class CategoryFilter extends Component {
     }
 
     componentDidMount() {
-        const accessToken = localStorage.getItem('accessToken');
-        const config = {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        };
-
-        api.get('categoriaservico', config)
+        api.get('categoriaservico')
         .then((response) => this.setState({ categories: response.data }))
         .catch((error) => console.error('Erro ao carregar categorias de serviço:', error));
     }

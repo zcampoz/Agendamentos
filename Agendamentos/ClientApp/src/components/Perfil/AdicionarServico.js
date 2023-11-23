@@ -11,13 +11,6 @@ export const AdicionarServico = () => {
 
     const navigate = useNavigate();
 
-    const accessToken = localStorage.getItem('accessToken');
-    const config = {
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-        },
-    };
-
     const [categorias, setCategorias] = useState([]);
     const [categoriaSelecionada, setCategoriaSelecionada] = useState('');
 
@@ -26,7 +19,7 @@ export const AdicionarServico = () => {
     }, []);
 
     const loadCategorias = () => {
-        api.get('categoriaservico', config)
+        api.get('categoriaservico')
             .then((response) => setCategorias(response.data))
             .catch((error) => console.error('Erro ao carregar categorias de serviço:', error));
     }
@@ -43,7 +36,7 @@ export const AdicionarServico = () => {
             prestadorId: userId
         };
 
-        api.post('servico', data, config)
+        api.post('servico', data)
             .then((response) => {
                 console.log('Adicionou serviço', response.data);
                 navigate('/perfil');
@@ -54,63 +47,73 @@ export const AdicionarServico = () => {
     const handleChangeCategoria = (event) => setCategoriaSelecionada(event.target.value);
 
     return (
-        <div className="login-container">
-            <h2>Adicionar Serviço</h2>
+        <div className="padrao-container">
             <form type="form" onSubmit={salvarServico}>
-                <div className="form-group">
-                    <label htmlFor="email">Nome</label>
+                <h2>Adicionar Serviço</h2>
+                <div className="form-floating mb-3">
                     <input
                         type="text"
                         id="nome"
+                        className="form-control"
                         placeholder="Nome do Serviço"
                         value={nome}
                         onChange={(e) => setNome(e.target.value)}
                     />
+                    <label htmlFor="nome" className="form-label">Nome</label>
                 </div>
-                <div className="form-group">
-                    <label htmlFor="descricao">Descrição</label>
-                    <input
+                <div className="form-floating mb-3">
+                    <textarea 
                         type="text"
                         id="descricao"
                         placeholder="Descrição do serviço"
+                        className="form-control"
                         value={descricao}
                         onChange={e => setDescricao(e.target.value)}
                     />
+                    <label htmlFor="descricao" className="form-label">Descrição</label>
                 </div>
-                <div className="form-group">
-                    <label htmlFor="preco">Preço</label>
+                <div className="form-floating mb-3">
                     <input
                         type="number"
                         step="0.01"
                         id="preco"
+                        className="form-control"
                         placeholder="Preço"
                         value={preco}
                         onChange={(e) => setPreco(e.target.value)}
                     />
+                    <label htmlFor="preco" className="form-label">Preço</label>
                 </div>
-                <div className="form-group">
-                    <label htmlFor="duracaoEstimada">Duracao Estimada</label>
+                <div className="form-floating mb-3">
                     <input
                         type="number"
                         step="0"
                         id="duracaoEstimada"
+                        className="form-control"
                         placeholder="Duração Estimada"
                         value={duracaoEstimada}
                         onChange={e => setDuracaoEstimada(e.target.value)}
                     />
+                    <label htmlFor="duracaoEstimada" className="form-label">Duracao Estimada</label>
                 </div>
-                <div className="form-group">
-                    <label htmlFor="categorias">Categoria</label>
-                    <select id="categorias" value={categoriaSelecionada} onChange={handleChangeCategoria}>
+                <div className="form-floating mb-3">
+                    <select id="categorias"
+                        className="form-select"
+                        value={categoriaSelecionada}
+                        onChange={handleChangeCategoria}>
                         <option value="">Selecione</option>
                         {categorias.map(categoria => (
                             <option key={categoria.id} value={categoria.id}>
                                 {categoria.nome}
                             </option>
                         ))}
-                        </select>
+                    </select>
+                    <label htmlFor="categorias" className="form-label">Categoria</label>
                 </div>
-                <button type="submit" className="save-button">Salvar</button>
+                <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" className="btn btn-primary">Salvar</button>
+                </div>
+                
             </form>
         </div>
     );

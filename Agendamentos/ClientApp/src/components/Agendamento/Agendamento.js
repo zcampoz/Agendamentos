@@ -2,6 +2,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { DateSelector, TimeSlotSelector } from './DateTimeSelectors';
 import { api } from '../../services/api';
+import './Agendamentos.css';
 
 export const Agendamento = () => {
     const [selectedDate, setSelectedDate] = useState(null);
@@ -13,14 +14,7 @@ export const Agendamento = () => {
     const navigate = useNavigate();
     const selectedService = location.state?.selectedService; 
 
-    const accessToken = localStorage.getItem('accessToken');
     const userId = parseInt(localStorage.getItem('userId'), 10);
-    const config = {
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-        },
-    };
 
     const handleDateSelection = (date) => {
         setSelectedDate(date);
@@ -42,7 +36,7 @@ export const Agendamento = () => {
                 horarioAgendamento: selectedTimeSlot.toString(),
             };
 
-            api.post('agendamento', data, config)
+            api.post('agendamento', data)
                 .then((response) => {
                     console.log('Agendamento bem-sucedido:', response.data);
                     navigate('/home');
@@ -56,7 +50,7 @@ export const Agendamento = () => {
 
     const getHorariosDisponiveis = (prestadorID, selectedDate) => {
         if (prestadorID && selectedDate) {
-            api.get(`horariodisponibilidade?PrestadorID=${prestadorID}&dataSecionada=${selectedDate}`, config)
+            api.get(`horariodisponibilidade?PrestadorID=${prestadorID}&dataSecionada=${selectedDate}`)
                 .then((response) => {
                     console.log('Dados horarios:', response.data);
                     setHorarios(response.data);
@@ -71,7 +65,7 @@ export const Agendamento = () => {
     const getAgendamentosPelaData = (selectedDate) => { 
         const prestadorID = selectedService?.prestadorID
         if (prestadorID && selectedDate) {
-            api.get(`agendamento/agendados?PrestadorId=${prestadorID}&dataSelecionada=${selectedDate}`, config)
+            api.get(`agendamento/agendados?PrestadorId=${prestadorID}&dataSelecionada=${selectedDate}`)
                 .then((response) => {
                     console.log('Dados agendados:', response.data);
                     setAgendados(response.data);
@@ -84,16 +78,19 @@ export const Agendamento = () => {
     }
 
     return (
-        <div>
-            <h2>Agendar Serviço</h2>
-            <h3>{selectedService?.nome}</h3>
-            <h4>{selectedService?.descricao}</h4>
-            <h4>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(selectedService?.preco)}</h4>
+        <>
+        <div className="agenda-container">
+            <div>
+                <div>
+                    <h2>Agendamento de Serviços</h2>
+                </div>
+                <h5>{selectedService?.nome}</h5>
+                <h5>{selectedService?.descricao}</h5>
+                <h5>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(selectedService?.preco)}</h5>
 
-            {/* Componente de seleção de data */}
-            <DateSelector selectedDate={selectedDate} onDateSelect={handleDateSelection} />
+                <DateSelector selectedDate={selectedDate} onDateSelect={handleDateSelection} />
+            </div>
 
-            {/* Componente de seleção de horário */}
             <TimeSlotSelector
                 selectedTimeSlot={selectedTimeSlot}
                 onTimeSlotSelect={handleTimeSlotSelection}
@@ -102,9 +99,10 @@ export const Agendamento = () => {
                 selectedService={selectedService}
                 selectedDate={selectedDate}
             />
-
-            {/* Botão para confirmar o agendamento */}
-            <button onClick={handleAgendamentoSubmit}>Agendar</button>
         </div>
+        <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button className="btn btn-primary" onClick={handleAgendamentoSubmit} >Agendar</button>
+        </div>
+        </>
     );
 }

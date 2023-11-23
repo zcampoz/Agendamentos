@@ -1,23 +1,42 @@
 ﻿import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
 import { api } from '../../services/api'
+import { validateEmail, validatePassword } from '../../services/validationForm'
 
 export const Login = () => {
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
+    const [isEmailValid, setIsEmailValid] = useState(true);
+    const [isPasswordValid, setIsPasswordValid] = useState(true);
 
     const navigate = useNavigate();
+
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value);
+        setIsEmailValid(true);
+    };
+
+    const handlePasswordChange = (e) => {
+        setSenha(e.target.value);
+        setIsPasswordValid(true);
+    };
 
     async function login(e) {
         e.preventDefault();
 
-        const data = {
-            email,
-            senha
-        };
+        if (!validateEmail(email)) {
+            setIsEmailValid(false);
+            return;
+        }
+
+        //if (!validatePassword(senha)) {
+        //    setIsPasswordValid(false);
+        //    return;
+        //}
 
         try {
-            const response = await api.post('/auth/signin', data)
+            const data = { email, senha };
+            await api.post('/auth/signin', data)
             .then(response => {
                 console.log('Response:', response.data);
                 if (response.status === 200) {
@@ -31,11 +50,7 @@ export const Login = () => {
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
                 localStorage.clear();
-                if (response.status === 401) {
-                    alert('Email e/ou Senha inválidos.');
-                }
             });
         } catch (ex) {
             localStorage.clear();
@@ -45,35 +60,49 @@ export const Login = () => {
     };
 
     return (
-        <div className="login-container">
-            <h2>Login</h2>
-            <form type="form" onSubmit={login}>
-                <div className="form-group">
-                    <label htmlFor="email">Email</label>
+        <div className="padrao-container">
+            <form type="form" className="needs-validation" noValidate onSubmit={login} >
+                <h2>Login</h2>
+                <div className="form-floating mb-3">
+                    
                     <input
                         type="email"
                         id="email"
+                        className={`form-control ${isEmailValid ? '' : 'is-invalid'}`}
                         placeholder="Seu email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={handleEmailChange}
+                        required
                     />
+                    <label htmlFor="email" className="form-label">Email</label>
+                    <div className="invalid-feedback">
+                        Por favor, insira um endereço de e-mail válido.
+                    </div>
                 </div>
-                <div className="form-group">
-                    <label htmlFor="password">Senha</label>
+                <div className="form-floating mb-3">
                     <input
                         type="password"
-                        id="senha"
+                        id="password"
+                        className={`form-control`}
                         placeholder="Sua senha"
                         value={senha}
-                        onChange={e => setSenha(e.target.value)}
+                        onChange={(e) => setSenha(e.target.value)}
                     />
+                    <label htmlFor="password" className="form-label">Senha</label>
+                    <div className="invalid-feedback">
+                        A senha deve ter pelo menos 8 caracteres, incluindo maiúsculas,
+                        minúsculas, números e os seguintes caracteres especiais: !@#$%^&*(),.?":{ }|.
+                    </div>
                 </div>
-                <button type="submit" className="login-button">Login</button>
+                <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" className="btn btn-primary">Login</button>
+                </div>
+
+                <div className="col-12 padrao-container-registro">
+                    <p>Não possui uma conta?</p>
+                    <Link to="/registro" className="padrao-container-criar" >Criar Conta</Link>
+                </div>
             </form>
-            <div className="create-account">
-                <p>Não possui uma conta?</p>
-                <Link to="/registro" className="create-account-button">Criar Conta</Link>
-            </div>
         </div>
     );
 }

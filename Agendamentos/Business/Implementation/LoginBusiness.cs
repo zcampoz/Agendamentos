@@ -52,7 +52,8 @@ namespace Agendamentos.Business.Implementation
 
         public bool RevokeToken(string username)
         {
-            return _usuariosRepository.RevokeToken(username);
+            var refreshToken = _tokenService.GenerateRefreshToken();
+            return _usuariosRepository.RevokeToken(username, refreshToken);
         }
 
         public TokenVO ValidateCredentials(AuthDTO credenciais)

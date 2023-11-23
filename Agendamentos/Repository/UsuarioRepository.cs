@@ -1,4 +1,5 @@
 ﻿using Agendamentos.Commom.DTO;
+using Agendamentos.Commom.Enum;
 using Agendamentos.Model;
 using Agendamentos.Model.Context;
 using Microsoft.EntityFrameworkCore;
@@ -66,12 +67,13 @@ namespace Agendamentos.Repository
                 }
             }
         }
-        public bool RevokeToken(string username)
+
+        public bool RevokeToken(string username, string refreshToken)
         {
             var user = _context.Usuarios.SingleOrDefault(x => x.Email.Equals(username));
             if (user == null) return false;
 
-            user.RefreshToken = null;
+            user.RefreshToken = refreshToken;
             _context.SaveChanges();
 
             return true;
@@ -133,6 +135,26 @@ namespace Agendamentos.Repository
             {
                 return null;
             }
+        }
+
+        public Usuario UpdatePerfilEmpresa(long userId)
+        {
+            var result = _context.Usuarios.FirstOrDefault(x => x.ID == userId);
+            if (result != null)
+            {
+                try
+                {
+                    result.TipoUsuario = UsuarioEnum.prestador.ToString();
+                    _context.SaveChanges();
+                    return result;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            else
+                return null;
         }
 
         public Usuario ValidarUsuario(string username)

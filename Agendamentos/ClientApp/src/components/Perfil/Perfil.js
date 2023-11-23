@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { format } from 'date-fns';
 import React, { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import { api } from '../../services/api';
 
@@ -13,14 +12,7 @@ export const Perfil = () => {
     const [empresa, setEmpresa] = useState(false);
     const [servicos, setServicos] = useState([]);
 
-    const accessToken = localStorage.getItem('accessToken');
     const userId = parseInt(localStorage.getItem('userId'), 10);
-    const config = {
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-        },
-    };
 
     useEffect(() => {
         loadUserData();
@@ -42,7 +34,7 @@ export const Perfil = () => {
 
     const loadUserData = async () => {
         try {
-            const response = await api.get(`usuario/${userId}`, config);
+            const response = await api.get(`usuario/${userId}`);
             console.log('Perfil Usuario: ', response.data);
             setUsuario(response.data);
             setEmpresa(response.data.empresa);
@@ -54,7 +46,7 @@ export const Perfil = () => {
 
     const loadAgendamentos = (perfilEmpresa) => {
         if (perfilEmpresa) {
-            api.get(`agendamento/prestador/${userId}`, config)
+            api.get(`agendamento/prestador/${userId}`)
                 .then(response => {
                     console.log('Perfil Agendamento Prestador: ', response.data);
                     setAgendamentos(response.data)
@@ -62,7 +54,7 @@ export const Perfil = () => {
                 .catch(error => console.error('Erro ao carregar agendamentos:', error));
         }
         else {
-            api.get(`agendamento/cliente/${userId}`, config)
+            api.get(`agendamento/cliente/${userId}`)
                 .then(response => {
                     console.log('Perfil Agendamento Cliente: ', response.data);
                     setAgendamentos(response.data)
@@ -72,7 +64,7 @@ export const Perfil = () => {
     };
 
     const loadServicos = () => {
-        api.get(`servico/Prestador/${userId}`, config)
+        api.get(`servico/Prestador/${userId}`)
             .then(response => setServicos(response.data))
             .catch(error => console.error('Erro ao carregar serviços:', error));
     };
@@ -93,7 +85,7 @@ export const Perfil = () => {
     };
 
     const atualizarStatusAgendamento = (data) => {
-        api.put(`agendamento/UpdateStatus`, data, config)
+        api.put(`agendamento/UpdateStatus`, data)
         .then((response) => {
             loadUserData();
             console.log(`Status atualizado com sucesso! ${data}`);
@@ -104,7 +96,7 @@ export const Perfil = () => {
     }
 
     const cancelarServico = (servicoId) => {
-        api.delete(`servico/${servicoId}`, config)
+        api.delete(`servico/${servicoId}`)
         .then((response) => {
             const novaLista = servicos.filter(item => item.id !== servicoId);
             setServicos(novaLista);
@@ -116,124 +108,133 @@ export const Perfil = () => {
         });
     };
 
-    return (
-        <>
-            <Helmet>
-                <meta charSet="utf-8" />
-            </Helmet>
-            <div>
-                <h2>Usuário</h2>
-                <p>Nome: {usuario.nome}</p>
-                <p>Email: {usuario.email}</p>
-                <p>Perfil: {usuario.empresa ? 'Empresa' : 'Cliente'}</p>
+    const atualizarPerfilEmpresa = () => {
+        api.put('usuario/AtualizarPerfilPrestador', { id: userId })
+            .then((response) => {
+                loadUserData();
+            })
+            .catch((error) => {
+                console.error('Erro ao atualizar o status do agendamento:', error);
+            });
+    }
 
-                {agendamentos.length > 0 ? (
-                    <>
-                        <h3>Agendamentos</h3>
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Data e Hora</th>
-                                    <th>Serviço</th>
-                                    <th>Status</th>
-                                    <th>Ações</th>
+    return (
+        <div className="mb-3">
+            <h2>Perfil do cliente</h2>
+            <p>Nome: {usuario.nome}</p>
+            <p>Email: {usuario.email}</p>
+            <p>Perfil: {usuario.empresa ? 'Empresa' : 'Cliente'}</p>
+            {!usuario.empresa && (
+                <div className="col-12">
+                    <button type="button" className="btn btn-secondary" onClick={() => atualizarPerfilEmpresa()}>Adicionar perfil empresa?</button>
+                </div>
+            )}
+            {agendamentos.length > 0 ? (
+                <div className="perfil-grid">
+                    <h3>Agendamentos</h3>
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Data e Hora</th>
+                                <th>Atividade</th>
+                                <th>Status</th>
+                                <th>Executar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {agendamentos.map(agendamento => (
+                                <tr key={agendamento.id}>
+                                    <td>{agendamento.id}</td>
+                                    <td>{format(new Date(agendamento.dataHora), 'dd/MM/yyyy HH:mm')}</td>
+                                    <td>{agendamento.servico.nome}</td>
+                                    <td>{getStatusByIndex(agendamento.estadoAgendamento)}</td>
+                                    <td>
+                                        <div className="btn-group" role="group" aria-label="Ações">
+                                            <button
+                                                type="button"
+                                                className="btn btn-primary"
+                                                title="Confirmar"
+                                                onClick={() => confirmarAgendamento(agendamento.id)}
+                                            >
+                                                <FontAwesomeIcon icon={faThumbsUp} />
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="btn btn-success"
+                                                title="Concluir"
+                                                onClick={() => concluirAgendamento(agendamento.id)}
+                                            >
+                                                <FontAwesomeIcon icon={faCheck} />
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="btn btn-danger"
+                                                title="Cancelar"
+                                                onClick={() => cancelarAgendamento(agendamento.id)}
+                                            >
+                                                <FontAwesomeIcon icon={faTrashAlt} />
+                                            </button>
+                                        </div>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {agendamentos.map(agendamento => (
-                                    <tr key={agendamento.id}>
-                                        <td>{agendamento.id}</td>
-                                        <td>{format(new Date(agendamento.dataHora), 'dd/MM/yyyy HH:mm')}</td>
-                                        <td>{agendamento.servico.nome}</td>
-                                        <td>{getStatusByIndex(agendamento.estadoAgendamento)}</td>
-                                        <td>
-                                            <div className="btn-group" role="group" aria-label="Ações">
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-primary"
-                                                    title="Confirmar"
-                                                    onClick={() => confirmarAgendamento(agendamento.id)}
-                                                >
-                                                    <FontAwesomeIcon icon={faThumbsUp} />
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-success"
-                                                    title="Concluir"
-                                                    onClick={() => concluirAgendamento(agendamento.id)}
-                                                >
-                                                    <FontAwesomeIcon icon={faCheck} />
-                                                </button>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            ) : (
+                <p>Nenhum agendamento disponível.</p>
+            )}
+
+            {empresa && (
+                <>
+                    {servicos.length > 0 ? (
+                        <>
+                            <h3>Serviços da Empresa</h3>
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Nome</th>
+                                        <th scope="col">Descrição</th>
+                                        <th scope="col">Preço</th>
+                                        <th scope="col">Duração Estimada</th>
+                                        <th scope="col">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {servicos.map(servico => (
+                                        <tr key={servico.id}>
+                                            <td>{servico.id}</td>
+                                            <td>{servico.nome}</td>
+                                            <td>{servico.descricao}</td>
+                                            <td>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(servico.preco)}</td>
+                                            <td>{servico.duracaoEstimada}</td>
+                                            <td>
                                                 <button
                                                     type="button"
                                                     className="btn btn-danger"
-                                                    title="Cancelar"
-                                                    onClick={() => cancelarAgendamento(agendamento.id)}
+                                                    title="Excluir"
+                                                    onClick={() => cancelarServico(servico.id)}
                                                 >
                                                     <FontAwesomeIcon icon={faTrashAlt} />
                                                 </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </>
-                ) : (
-                    <p>Nenhum agendamento disponível.</p>
-                )}
-
-                {empresa && (
-                    <>
-                        {servicos.length > 0 ? (
-                            <>
-                                <h3>Serviços da Empresa</h3>
-                                <table className="table">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Nome</th>
-                                            <th>Descrição</th>
-                                            <th>Preço</th>
-                                            <th>Duração Estimada</th>
-                                            <th>Ações</th>
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        {servicos.map(servico => (
-                                            <tr key={servico.id}>
-                                                <td>{servico.id}</td>
-                                                <td>{servico.nome}</td>
-                                                <td>{servico.descricao}</td>
-                                                <td>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(servico.preco)}</td>
-                                                <td>{servico.duracaoEstimada}</td>
-                                                <td>
-                                                    <button
-                                                        type="button"
-                                                        className="btn btn-danger"
-                                                        title="Excluir"
-                                                        onClick={() => cancelarServico(servico.id)}
-                                                    >
-                                                        <FontAwesomeIcon icon={faTrashAlt} />
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </>
-                        ) : (
-                            <p>Nenhum dado de serviço disponível.</p>
-                        )}
+                                    ))}
+                                </tbody>
+                            </table>
+                        </>
+                    ) : (
+                        <p>Nenhum dado de serviço disponível.</p>
+                    )}
 
-                        <Link to="/add-service">
-                            <button className="btn btn-primary">Adicionar Serviço</button>
-                        </Link>
+                    <Link to="/add-service">
+                        <button className="btn btn-primary">Adicionar Serviço</button>
+                    </Link>
                         
-                    </>
-                )}
-            </div >
-        </>
+                </>
+            )}
+        </div >
     );
 };

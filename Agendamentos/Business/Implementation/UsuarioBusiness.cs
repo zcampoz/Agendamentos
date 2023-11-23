@@ -36,6 +36,12 @@ namespace Agendamentos.Business.Implementation
             return this.ConvertToUsuarioDto(entity);
         }
 
+        public UsuarioDto AtualizarPerfilPrestador(long userId)
+        {
+            var entity = _repository.UpdatePerfilEmpresa(userId);
+            return this.ConvertToUsuarioDto(entity);
+        }
+
         public void Delete(long id)
         {
             _repository.Delete(id);

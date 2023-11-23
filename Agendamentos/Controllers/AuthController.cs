@@ -1,7 +1,6 @@
 ﻿using Agendamentos.Business;
 using Agendamentos.Commom.DTO;
 using Agendamentos.Data.VO;
-using Agendamentos.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

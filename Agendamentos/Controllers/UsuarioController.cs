@@ -47,6 +47,15 @@ namespace Agendamentos.Controllers
             return Ok(_business.Update(usuario));
         }
 
+        [HttpPut("AtualizarPerfilPrestador")]
+        public IActionResult AtualizarPerfilPrestador([FromBody] UsuarioEmpresaDto empresa)
+        {
+            if (empresa.Id <= 0)
+                return BadRequest();
+
+            return Ok(_business.AtualizarPerfilPrestador(empresa.Id));
+        }
+
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {

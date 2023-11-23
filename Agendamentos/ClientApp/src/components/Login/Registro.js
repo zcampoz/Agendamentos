@@ -1,20 +1,53 @@
 ﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import { api } from '../../services/api'
+import { validateEmail, validatePassword, validateName } from '../../services/validationForm'
 
 export const Registro = () => {
     const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
-    const [senha, setSenha] = useState('');
+    const [senha, setSenha] = useState(''); 
+    const [isNameValid, setIsNameValid] = useState(true);
+    const [isEmailValid, setIsEmailValid] = useState(true);
+    const [isPasswordValid, setIsPasswordValid] = useState(true);
 
     const navigate = useNavigate();
+
+    const handleNameChange = (e) => {
+        setNome(e.target.value);
+        setIsNameValid(true);
+    };
+
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value);
+        setIsEmailValid(true);
+    };
+
+    const handlePasswordChange = (e) => {
+        setSenha(e.target.value);
+        setIsPasswordValid(true);
+    };
 
     async function registrar(e) {
         e.preventDefault();
 
-        const data = { nome, email, senha };
+        if (!validateName(nome)) {
+            setIsNameValid(false);
+            return;
+        }
+
+        if (!validateEmail(email)) {
+            setIsEmailValid(false);
+            return;
+        }
+
+        if (!validatePassword(senha)) {
+            setIsPasswordValid(false);
+            return;
+        }
 
         try {
+            const data = { nome, email, senha };
             const response = await api.post('/auth/register', data)
             .then(response => {
                 console.log('Response:', response.data);
@@ -41,40 +74,58 @@ export const Registro = () => {
     }
 
     return (
-        <div className="registro-container">
-            <h2>Criar Conta</h2>
-            <form type="form" onSubmit={registrar}>
-                <div className="form-group">
-                    <label htmlFor="nome">Nome</label>
+        <div className="padrao-container">
+            <form type="form" className="needs-validation" noValidate onSubmit={registrar}>
+                <h2>Criar Conta</h2>
+                <div className="form-floating mb-3">
                     <input
                         type="text"
                         id="nome"
+                        className={`form-control ${isNameValid ? '' : 'is-invalid'}`}
                         placeholder="Seu nome"
                         value={nome}
-                        onChange={(e) => setNome(e.target.value)}
+                        onChange={handleNameChange}
+                        required
                     />
+                    <label htmlFor="nome" className="form-label">Nome</label>
+                    <div className="invalid-feedback">
+                        O nome deve conter entre 2 e 15 caracteres.
+                    </div>
                 </div>
-                <div className="form-group">
-                    <label htmlFor="email">Email</label>
+                <div className="form-floating mb-3">
                     <input
                         type="email"
                         id="email"
+                        className={`form-control ${isEmailValid ? '' : 'is-invalid'}`}
                         placeholder="Seu email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={handleEmailChange}
+                        required
                     />
+                    <label htmlFor="email" className="form-label">Email</label>
+                    <div className="invalid-feedback">
+                        Por favor, insira um endereço de e-mail válido.
+                    </div>
                 </div>
-                <div className="form-group">
-                    <label htmlFor="password">Senha</label>
+                <div className="form-floating mb-3">
                     <input
                         type="password"
                         id="password"
+                        className={`form-control ${isPasswordValid ? '' : 'is-invalid'}`}
                         placeholder="Sua senha"
                         value={senha}
-                        onChange={(e) => setSenha(e.target.value)}
+                        onChange={handlePasswordChange}
+                        required
                     />
+                    <label htmlFor="password" className="form-label">Senha</label>
+                    <div className="invalid-feedback">
+                        A senha deve ter entre 8 e 30 caracteres, incluindo maiúsculas,
+                        minúsculas, números e os seguintes caracteres especiais: !@#$%^&*(),.?":{ }|.
+                    </div>
                 </div>
-                <button type="submit" className="registro-button">Registrar</button>
+                <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" className="btn btn-primary">Registrar</button>
+                </div>
             </form>
         </div>
     );

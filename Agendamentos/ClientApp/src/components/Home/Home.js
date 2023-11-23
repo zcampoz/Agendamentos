@@ -9,13 +9,6 @@ export const Home = () => {
     const [categoryFilter, setCategoryFilter] = useState("0");
     const navigate = useNavigate();
 
-    const accessToken = localStorage.getItem('accessToken');
-    const config = {
-        headers: {
-            Authorization: `Bearer ${accessToken}`
-        },
-    };
-
     const handleServiceSelection = (service) => {
         navigate('/agendamento', { state: { selectedService: service } });
     };
@@ -34,7 +27,7 @@ export const Home = () => {
             : services.filter((service) => service.categoriaID == categoryFilter);
 
     const populateServicosData = () => {
-        api.get('servico', config)
+        api.get('servico')
         .then((response) => {
             console.log(response.data);
             setServices(response.data);
@@ -49,7 +42,7 @@ export const Home = () => {
         <div>
             <div className="main-content">
                 <div className="main-content">
-                    <p className="typography">Encontre um serviço</p>
+                    <p className="typography">Agende sua atividade</p>
                 </div>
                 <div className="masonryPanel2">
                     <div className="buttonBorder">
@@ -83,8 +76,10 @@ export const Home = () => {
                             <h2>{service.nome}</h2>
                             <p>{service.descricao}</p>
                             <p>{service.categoriaNome}</p>
-                            <p>Preço: {Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(service.preco)}</p>
-                            <button onClick={() => handleServiceSelection(service)}>Agendar</button>
+                            <p>Valor: {Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(service.preco)}</p>
+                            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button className="btn btn-primary" onClick={() => handleServiceSelection(service)}>Agendar</button>
+                            </div>
                         </div>
                     ))}
                 </div>

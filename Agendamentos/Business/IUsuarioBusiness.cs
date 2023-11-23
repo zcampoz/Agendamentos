@@ -14,5 +14,7 @@ namespace Agendamentos.Business
         public UsuarioDto Update(UsuarioDto usuario);
 
         public void Delete(long id);
+
+        public UsuarioDto AtualizarPerfilPrestador(long userId);
     }
 }

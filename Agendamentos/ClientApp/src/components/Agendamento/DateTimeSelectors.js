@@ -47,19 +47,21 @@ export const TimeSlotSelector = ({ selectedDate, selectedService, agendadosList,
 
         let currentTime = new Date(`${referenceDate}T${startDate}`);
         const endTime = new Date(`${referenceDate}T${endDate}`);
-
+        var index = 0;
         while (currentTime < endTime) {
             const timeSlot = new Date(currentTime);
-            const timeSlotString = timeSlot.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const timeSlotString = timeSlot.toLocaleTimeString();
             const isAgendado = agendados.includes(timeSlotString);
 
             timeSlots.push({
+                index: index,
                 time: timeSlotString,
                 checked: isAgendado,
                 disabled: isAgendado,
             });
 
             currentTime = new Date(currentTime.getTime() + serviceDuration * 60 * 1000);
+            index++;
         }
 
         return timeSlots;
@@ -71,128 +73,29 @@ export const TimeSlotSelector = ({ selectedDate, selectedService, agendadosList,
 
     return (
         <div>
-            {availableTimeSlots.length > 0 && (
+            <h3>Horários Disponíveis</h3>
+            {availableTimeSlots.length > 0 ? (
                 <>
-                    <h3>Selecione um Horário</h3>
-                    <div>
-                        {availableTimeSlots.map((timeSlot) => (
-                            <div key={timeSlot}>
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        value={timeSlot}
-                                        checked={selectedTimeSlot === timeSlot}
-                                        onChange={() => handleTimeSlotSelect(timeSlot)}
-                                        disabled={timeSlot.disabled}
-                                    />
-                                    {timeSlot.time}
-                                </label>
-                            </div>
-                        ))}
-                    </div>
+                <div className="agenda-time-picker">
+                    
+                    {availableTimeSlots.map((timeSlot) => (
+                        <div key={timeSlot.index} className="agenda-time-picker-item form-check">
+                            <input id={`chk_${timeSlot.index}`}
+                            type="checkbox"
+                            className="form-check-input"
+                            value={timeSlot.index}
+                            checked={selectedTimeSlot === timeSlot}
+                            disabled={timeSlot.disabled}
+                            onChange={() => handleTimeSlotSelect(timeSlot)}
+                            />
+                            <label class="form-check-label" for={`chk_${timeSlot.index}`}>{timeSlot.time}</label>
+                        </div>
+                    ))}
+                </div>
                 </>
+            ) : (
+                    <p>Nenhum horário disponível para a data selecionada.</p>
             )}
         </div>
     );
 }
-
-
-//import React, { useState, useEffect } from 'react';
-//import { api } from '../../services/api'
-
-//export const DateSelector = ({ onDateSelect }) => {
-//    const [selectedDate, setSelectedDate] = useState(null);
-
-//    const handleDateSelect = (event) => {
-//        const selectedDate = event.target.value;
-//        setSelectedDate(selectedDate);
-//        onDateSelect(selectedDate);
-//    };
-
-//    const currentDate = new Date().toISOString().split('T')[0];
-
-//    return (
-//        <div>
-//            <h3>Selecione uma Data</h3>
-//            <input
-//                type="date"
-//                value={selectedDate || ''}
-//                onChange={handleDateSelect}
-//                min={currentDate}
-//            />
-//        </div>
-//    );
-//}
-
-//export const TimeSlotSelector = ({ startDate, endDate, serviceDuration, selectedTimeSlot, onTimeSlotSelect }) => {
-//    const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
-//    const [horarios, setHorarios] = useState([]);
-
-//    const accessToken = localStorage.getItem('accessToken');
-//    const config = {
-//        headers: {
-//            Authorization: `Bearer ${accessToken}`
-//        },
-//    };
-
-//    useEffect(() => {
-//        getHorariosDisponiveis();
-//        fetchAvailableTimeSlots(horarios.horaInicio, horarios.horaFim, serviceDuration);
-//        //fetchAvailableTimeSlots('2023-09-15 09:00:00.000', '2023-09-15 18:00:00.000', 30);
-//    }, [horarios, serviceDuration]);
-
-//    const fetchAvailableTimeSlots = (startDate, endDate, serviceDuration) => {
-//        const timeSlots = splitTimeSlots(startDate, endDate, serviceDuration);
-//        setAvailableTimeSlots(timeSlots);
-//    };
-
-//    const splitTimeSlots = (startDate, endDate, serviceDuration) => {
-//        const timeSlots = [];
-//        let currentTime = new Date(startDate);
-
-//        while (currentTime < new Date(endDate)) {
-//            var timeSlot = new Date(currentTime);
-//            timeSlots.push(timeSlot.toLocaleTimeString());
-//            currentTime = new Date(currentTime.getTime() + serviceDuration * 60 * 1000);
-//        }
-
-//        return timeSlots;
-//    };
-
-//    const handleTimeSlotSelect = (timeSlot) => {
-//        onTimeSlotSelect(timeSlot);
-//    };
-
-//    const getHorariosDisponiveis = () => {
-//        const prestadorID = 2;
-//        const dataSecionada = '2023-11-13T08:00:00';
-//        api.get(`horariodisponibilidade?PrestadorID=${prestadorID}&dataSecionada=${dataSecionada}`, config)
-//        .then((response) => {
-//            setHorarios(response.data);
-//        })
-//        .catch((error) => {
-//            console.error('Erro ao buscar horarios:', error);
-//        });
-//    }
-
-//    return (
-//        <div>
-//            <h3>Selecione um Horário</h3>
-//            <ul>
-//                {availableTimeSlots.map((timeSlot) => (
-//                    <li key={timeSlot}>
-//                        <label>
-//                            <input
-//                                type="checkbox"
-//                                value={timeSlot}
-//                                checked={selectedTimeSlot === timeSlot}
-//                                onChange={() => handleTimeSlotSelect(timeSlot)}
-//                            />
-//                            {timeSlot}
-//                        </label>
-//                    </li>
-//                ))}
-//            </ul>
-//        </div>
-//    );
-//}

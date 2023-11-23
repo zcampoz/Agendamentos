@@ -1,3 +1,53 @@
+//import React, { useState, useEffect } from 'react';
+//import { Route, Routes, Navigate } from 'react-router-dom';
+//import AppRoutes from './AppRoutes';
+//import { Layout } from './components/Menu/Layout';
+//import './custom.css';
+
+//const PrivateRoute = ({ element, isAuthenticated, ...rest }) => (
+//    isAuthenticated ? <Route {...rest} element={element} /> : <Navigate to="/" replace />
+//);
+
+//const App = () => {
+//    const [authenticated, setAuthenticated] = useState(false);
+
+//    useEffect(() => {
+//        setAuthenticated(localStorage.getItem('authenticated'));
+//    }, []);
+
+//    return (
+//        <div>
+//            <Layout>
+//                <Routes>
+//                    {AppRoutes.map((route, index) => {
+//                        const { isProtected, element, ...rest } = route;
+
+//                        return isProtected ? (
+//                            <PrivateRoute
+//                                key={index}
+//                                {...rest}
+//                                isAuthenticated={authenticated}
+//                                element={element}
+//                            />
+//                        ) : (
+//                            <Route
+//                                key={index}
+//                                {...rest}
+//                                element={element}
+//                                render={(props) => (
+//                                    <element {...props} />
+//                                )}
+//                            />
+//                        );
+//                    })}
+//                </Routes>
+//            </Layout>
+//        </div>
+//    );
+//};
+
+//export default App;
+
 import React, { Component } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import AppRoutes from './AppRoutes';
