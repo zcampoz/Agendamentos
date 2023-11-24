@@ -1,131 +1,54 @@
-//import React, { useState, useEffect } from 'react';
-//import { Route, Routes, Navigate } from 'react-router-dom';
-//import AppRoutes from './AppRoutes';
-//import { Layout } from './components/Menu/Layout';
-//import './custom.css';
-
-//const PrivateRoute = ({ element, isAuthenticated, ...rest }) => (
-//    isAuthenticated ? <Route {...rest} element={element} /> : <Navigate to="/" replace />
-//);
-
-//const App = () => {
-//    const [authenticated, setAuthenticated] = useState(false);
-
-//    useEffect(() => {
-//        setAuthenticated(localStorage.getItem('authenticated'));
-//    }, []);
-
-//    return (
-//        <div>
-//            <Layout>
-//                <Routes>
-//                    {AppRoutes.map((route, index) => {
-//                        const { isProtected, element, ...rest } = route;
-
-//                        return isProtected ? (
-//                            <PrivateRoute
-//                                key={index}
-//                                {...rest}
-//                                isAuthenticated={authenticated}
-//                                element={element}
-//                            />
-//                        ) : (
-//                            <Route
-//                                key={index}
-//                                {...rest}
-//                                element={element}
-//                                render={(props) => (
-//                                    <element {...props} />
-//                                )}
-//                            />
-//                        );
-//                    })}
-//                </Routes>
-//            </Layout>
-//        </div>
-//    );
-//};
-
-//export default App;
-
-import React, { Component } from 'react';
-import { Route, Routes } from 'react-router-dom';
-import AppRoutes from './AppRoutes';
+import React from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import { Agendamento } from "./components/Agendamento/Agendamento";
+import { Home } from "./components/Home/Home";
+import { Login } from "./components/Login/Login";
+import { Logout } from "./components/Login/Logout";
+import { Registro } from "./components/Login/Registro";
 import { Layout } from './components/Menu/Layout';
+import { AdicionarServico } from "./components/Perfil/AdicionarServico";
+import { AdicionarDisponibilidade } from "./components/Perfil/AdicionarDisponibilidade";
+import { Perfil } from "./components/Perfil/Perfil";
 import './custom.css';
 
-export default class App extends Component {
-    static displayName = App.name;
+const PrivateRoute = ({ children }) => {
+    var auth = localStorage.getItem('authenticated');
+    var authTest = auth !== null;
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            isAuthenticated: false, // Verifique se o usuário está autenticado
-            user: null,
-            accessToken: null,
-        };
+    if (!authTest) {
+        return <Navigate to="/" />;
     }
-
-    renderApp() {
-        return (
-            <Layout>
-                <Routes>
-                    {AppRoutes.map((route, index) => {
-                        const { element, ...rest } = route;
-                        return (
-                            <Route
-                                key={index}
-                                {...rest}
-                                element={element}
-                                render={(props) => (
-                                    <element {...props} />
-                                )}
-                            />
-                        );
-                    })}
-                </Routes>
-            </Layout>
-        );
-    }
-
-    handleLoginSuccess = (user, accessToken) => {
-        this.setState({ isAuthenticated: true, user, accessToken });
-    }
-
-    render() {
-        return (
-            <div>
-                {this.renderApp()}
-            </div>
-        );
-    }
+    return <React.Fragment>{children}</React.Fragment>;
 }
 
-//export default class App extends Component {
-//    static displayName = App.name;
+const App = () => {
+    return (
+        <div>
+            <Layout>
+                <Routes>
+                    <Route path="/" element={<Login />} />
+                    <Route path="/registro" element={<Registro />} />
 
-//    renderApp() {
-//        return (
-//            <Layout>
-//                <Routes>
-//                    {AppRoutes.map((route, index) => {
-//                        const { element, ...rest } = route;
-//                        return <Route key={index} {...rest} element={element} />;
-//                    })}
-//                </Routes>
-//            </Layout>
-//        );
-//    }
+                    <Route path="/home" element={<PrivateRoute><Home /></PrivateRoute>} />
+                    <Route path="/agendamento" element={<PrivateRoute><Agendamento /></PrivateRoute>} />
+                    <Route path="/perfil" element={<PrivateRoute><Perfil /></PrivateRoute>} />
+                    <Route path="/add-service" element={<PrivateRoute><AdicionarServico /></PrivateRoute>} />
+                    <Route path="/add-disponibilidade" element={<PrivateRoute><AdicionarDisponibilidade /></PrivateRoute>} />
+                    <Route path="/logout" element={<PrivateRoute><Logout /></PrivateRoute>} />
 
-//    render() {
-//        let contents = true
-//            ? <Login/>
-//            : App.renderApp();
+                    <Route path="/*" element={<NotFound />} />
+                </Routes>
+            </Layout>
+        </div>
+    );
+};
 
-//        return (
-//            <div>
-//                {contents}
-//            </div>
-//        );
-//    }
-//}
+export default App;
+
+export const NotFound = () => {
+    return (
+    <div>
+        <h1>404 - Page not found.</h1>
+    </div>
+    );
+}

@@ -1,5 +1,5 @@
-﻿import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+﻿import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { DateSelector, TimeSlotSelector } from './DateTimeSelectors';
 import { api } from '../../services/api';
 import './Agendamentos.css';
@@ -16,6 +16,10 @@ export const Agendamento = () => {
 
     const userId = parseInt(localStorage.getItem('userId'), 10);
 
+    if (!selectedService) {
+        return <Navigate to="/home" />;
+    }
+
     const handleDateSelection = (date) => {
         setSelectedDate(date);
         getHorariosDisponiveis(selectedService?.prestadorID, date);
@@ -25,6 +29,10 @@ export const Agendamento = () => {
     const handleTimeSlotSelection = (timeSlot) => {
         setSelectedTimeSlot(timeSlot);
     };
+
+    const handleBotaoVoltar = () => {
+        navigate('/home');
+    }
 
     const handleAgendamentoSubmit = () => {
         if (selectedService && selectedTimeSlot) {
@@ -101,7 +109,8 @@ export const Agendamento = () => {
             />
         </div>
         <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-            <button className="btn btn-primary" onClick={handleAgendamentoSubmit} >Agendar</button>
+            <button type="button" onClick={() => handleBotaoVoltar()} className="btn btn-danger">Voltar</button>
+            <button className="btn btn-primary" onClick={() => handleAgendamentoSubmit()} >Agendar</button>
         </div>
         </>
     );

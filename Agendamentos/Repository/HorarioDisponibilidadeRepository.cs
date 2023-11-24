@@ -95,5 +95,12 @@ namespace Agendamentos.Repository
             return _context.HorariosDisponibilidade
                 .FirstOrDefault(x => x.PrestadorID.Equals(prestadorId) && x.DiaSemana.Equals(diaDaSemana));
         }
+
+        public List<HorarioDisponibilidade> GetByPrestadorId(long prestadorId)
+        {
+            return _context.HorariosDisponibilidade
+                .Where(x => x.PrestadorID.Equals(prestadorId))
+                .ToList();
+        }
     }
 }

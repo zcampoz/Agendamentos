@@ -38,9 +38,14 @@ namespace Agendamentos.Business.Implementation
             return _converter.Parser(_repository.GetHorario(prestadorId, diaDaSemanaEmPortugues[0]));
         }
 
-        public HorarioDisponibilidadeVO Insert(HorarioDisponibilidadeVO horarioDisponibilidade)
+        public List<HorarioDisponibilidadeVO> GetByPrestadorId(long prestadorId)
         {
-            var entity = _converter.Parser(horarioDisponibilidade);
+            return _converter.Parse(_repository.GetByPrestadorId(prestadorId));
+        }
+
+        public HorarioDisponibilidadeVO Insert(DisponibilidadeDto horarioDisponibilidade)
+        {
+            var entity = this.ConvertToEntity(horarioDisponibilidade);
             entity = _repository.Insert(entity);
             return _converter.Parser(entity);
         }
@@ -55,6 +60,20 @@ namespace Agendamentos.Business.Implementation
         public void Delete(long id)
         {
             _repository.Delete(id);
+        }
+
+        private HorarioDisponibilidade ConvertToEntity(DisponibilidadeDto disponibilidade)
+        {
+            TimeSpan.TryParse(disponibilidade.HoraInicio, out TimeSpan horaInicio);
+            TimeSpan.TryParse(disponibilidade.HoraFim, out TimeSpan horaFim);
+
+            return new HorarioDisponibilidade()
+            {
+                PrestadorID = disponibilidade.PrestadorID,
+                HoraInicio = horaInicio,
+                HoraFim = horaFim,
+                DiaSemana = disponibilidade.DiaSemana
+            };
         }
     }
 }

@@ -26,8 +26,14 @@ namespace Agendamentos.Controllers
             return Ok(_business.GetHorario(PrestadorID, dataSecionada));
         }
 
+        [HttpGet("Prestador/{PrestadorID}")]
+        public IActionResult GetByPrestadorId(long prestadorID)
+        {
+            return Ok(_business.GetByPrestadorId(prestadorID));
+        }
+
         [HttpPost]
-        public IActionResult Create([FromBody] HorarioDisponibilidadeVO disponibilidade)
+        public IActionResult Create([FromBody] DisponibilidadeDto disponibilidade)
         {
             if (disponibilidade == null)
                 return BadRequest();

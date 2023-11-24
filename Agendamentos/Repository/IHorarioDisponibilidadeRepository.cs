@@ -15,5 +15,7 @@ namespace Agendamentos.Repository
         public void Delete(long id);
 
         public HorarioDisponibilidade GetHorario(long prestadorId, string diaDaSemana);
+
+        List<HorarioDisponibilidade> GetByPrestadorId(long prestadorId);
     }
 }

@@ -73,6 +73,10 @@ export const Registro = () => {
         }
     }
 
+    const handleBotaoVoltar = () => {
+        navigate('/');
+    }
+
     return (
         <div className="padrao-container">
             <form type="form" className="needs-validation" noValidate onSubmit={registrar}>
@@ -124,6 +128,7 @@ export const Registro = () => {
                     </div>
                 </div>
                 <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="button" onClick={() => handleBotaoVoltar()} className="btn btn-danger">Voltar</button>
                     <button type="submit" className="btn btn-primary">Registrar</button>
                 </div>
             </form>

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { format } from 'date-fns';
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../../services/api';
 
 export const Perfil = () => {
@@ -11,12 +11,26 @@ export const Perfil = () => {
     const [agendamentos, setAgendamentos] = useState([]);
     const [empresa, setEmpresa] = useState(false);
     const [servicos, setServicos] = useState([]);
+    const [horarios, setHorarios] = useState([]);
 
     const userId = parseInt(localStorage.getItem('userId'), 10);
 
+    const navigate = useNavigate();
+
+    const handleAddService = () => {
+        navigate('/add-service', { state: { byProfile: true } });
+    };
+
+    const handleAddDisponibilidade = () => {
+        navigate('/add-disponibilidade', { state: { byProfile: true } });
+    };
+
     useEffect(() => {
         loadUserData();
-        loadServicos();
+        if (usuario.empresa) {
+            loadServicos();
+            loadHorarios();
+        }
     }, []);
 
     const StatusAgendamento = {
@@ -69,6 +83,13 @@ export const Perfil = () => {
             .catch(error => console.error('Erro ao carregar serviços:', error));
     };
 
+    const loadHorarios = () => {
+        debugger
+        api.get(`horariodisponibilidade/Prestador/${userId}`)
+            .then(response => setHorarios(response.data))
+            .catch(error => console.error('Erro ao carregar horarios:', error));
+    };
+
     const confirmarAgendamento = (agendamentoId) => {
         const data = { id: agendamentoId, novoStatus: 1 };
         atualizarStatusAgendamento(data);
@@ -108,6 +129,20 @@ export const Perfil = () => {
         });
     };
 
+    const cancelarHorario = (horarioId) => {
+        api.delete(`horariodisponibilidade/${horarioId}`)
+            .then((response) => {
+                const novaLista = horarios.filter(item => item.id !== horarioId);
+                setHorarios(novaLista);
+                console.log(`Horario excluido com sucesso ${horarioId}`);
+                alert(`Horario excluido com sucesso ${horarioId}`);
+            })
+            .catch((error) => {
+                console.error('Erro ao excluir o horario:', error);
+                alert(`Erro ao excluir o horario id: ${horarioId}!`);
+            });
+    };
+
     const atualizarPerfilEmpresa = () => {
         api.put('usuario/AtualizarPerfilPrestador', { id: userId })
             .then((response) => {
@@ -120,18 +155,20 @@ export const Perfil = () => {
 
     return (
         <div className="mb-3">
-            <h2>Perfil do cliente</h2>
-            <p>Nome: {usuario.nome}</p>
-            <p>Email: {usuario.email}</p>
-            <p>Perfil: {usuario.empresa ? 'Empresa' : 'Cliente'}</p>
+            <h2><strong>Perfil do cliente</strong></h2>
+            <p><strong>Nome:</strong> {usuario.nome}</p>
+            <p><strong>Email:</strong > {usuario.email}</p>
+            <p><strong>Perfil:</strong > {usuario.empresa ? 'Empresa' : 'Cliente'}</p>
             {!usuario.empresa && (
                 <div className="col-12">
                     <button type="button" className="btn btn-secondary" onClick={() => atualizarPerfilEmpresa()}>Adicionar perfil empresa?</button>
                 </div>
             )}
+
+            <h3>Agendamentos</h3>
             {agendamentos.length > 0 ? (
+                <>
                 <div className="perfil-grid">
-                    <h3>Agendamentos</h3>
                     <table className="table">
                         <thead>
                             <tr>
@@ -182,24 +219,25 @@ export const Perfil = () => {
                         </tbody>
                     </table>
                 </div>
+                </>
             ) : (
-                <p>Nenhum agendamento disponível.</p>
+                    <p><strong>Nenhum agendamento disponivel.</strong></p>
             )}
 
             {empresa && (
                 <>
+                    <h3>Atividades da Empresa</h3>
                     {servicos.length > 0 ? (
                         <>
-                            <h3>Serviços da Empresa</h3>
                             <table className="table">
                                 <thead>
                                     <tr>
-                                        <th scope="col">ID</th>
-                                        <th scope="col">Nome</th>
-                                        <th scope="col">Descrição</th>
-                                        <th scope="col">Preço</th>
-                                        <th scope="col">Duração Estimada</th>
-                                        <th scope="col">Ações</th>
+                                        <th scope="col">Id</th>
+                                        <th scope="col">Nome da atividade</th>
+                                        <th scope="col">Descritivo</th>
+                                        <th scope="col">Valor</th>
+                                        <th scope="col">Tempo Estimado</th>
+                                        <th scope="col">Executar</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -209,7 +247,7 @@ export const Perfil = () => {
                                             <td>{servico.nome}</td>
                                             <td>{servico.descricao}</td>
                                             <td>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(servico.preco)}</td>
-                                            <td>{servico.duracaoEstimada}</td>
+                                            <td>{servico.duracaoEstimada + ' min'}</td>
                                             <td>
                                                 <button
                                                     type="button"
@@ -226,12 +264,55 @@ export const Perfil = () => {
                             </table>
                         </>
                     ) : (
-                        <p>Nenhum dado de serviço disponível.</p>
+                        <p><strong>Nenhuma atividade disponivel.</strong></p>
                     )}
 
-                    <Link to="/add-service">
-                        <button className="btn btn-primary">Adicionar Serviço</button>
-                    </Link>
+                    <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button className="btn btn-primary" onClick={() => handleAddService()}>Adicionar Atividade</button>
+                    </div>
+
+                    <h3>Disponibilidade das Atividades</h3>
+                    {horarios.length > 0 ? (
+                        <>
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Id</th>
+                                        <th scope="col">Dia da Semana</th>
+                                        <th scope="col">Hora Inicial</th>
+                                        <th scope="col">Hora Final</th>
+                                        <th scope="col">Executar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {horarios.map(horario => (
+                                        <tr key={horario.id}>
+                                            <td>{horario.id}</td>
+                                            <td>{horario.diaSemana}</td>
+                                            <td>{horario.horaInicio}</td>
+                                            <td>{horario.horaFim}</td>
+                                            <td>
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-danger"
+                                                    title="Excluir"
+                                                    onClick={() => cancelarHorario(horario.id)}
+                                                >
+                                                    <FontAwesomeIcon icon={faTrashAlt} />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </>
+                    ) : (
+                        <p><strong>Nenhuma disponibilidade no momento.</strong></p>
+                    )}
+
+                    <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button className="btn btn-primary" onClick={() => handleAddDisponibilidade()}>Adicionar Disponibilidade</button>
+                    </div>
                         
                 </>
             )}

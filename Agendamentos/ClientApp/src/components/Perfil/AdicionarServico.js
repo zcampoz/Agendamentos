@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { api } from '../../services/api'
 
 export const AdicionarServico = () => {
@@ -14,9 +14,25 @@ export const AdicionarServico = () => {
     const [categorias, setCategorias] = useState([]);
     const [categoriaSelecionada, setCategoriaSelecionada] = useState('');
 
+    const location = useLocation();
+    const byProfile = location.state?.byProfile;
+
+    
     useEffect(() => {
-        loadCategorias()
+        validateEnter();
+        loadCategorias();
     }, []);
+
+    const validateEnter = () => { 
+        if (!byProfile) {
+            navigate('/perfil');
+        }
+    }
+
+    const handleBotaoVoltar = () => {
+        debugger
+        navigate('/perfil');
+    }
 
     const loadCategorias = () => {
         api.get('categoriaservico')
@@ -87,7 +103,7 @@ export const AdicionarServico = () => {
                 <div className="form-floating mb-3">
                     <input
                         type="number"
-                        step="0"
+                        step="10"
                         id="duracaoEstimada"
                         className="form-control"
                         placeholder="Duração Estimada"
@@ -111,9 +127,9 @@ export const AdicionarServico = () => {
                     <label htmlFor="categorias" className="form-label">Categoria</label>
                 </div>
                 <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="button" onClick={() => handleBotaoVoltar()} className="btn btn-danger">Voltar</button>
                     <button type="submit" className="btn btn-primary">Salvar</button>
-                </div>
-                
+                </div>                
             </form>
         </div>
     );
