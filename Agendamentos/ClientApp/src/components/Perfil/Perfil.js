@@ -28,6 +28,7 @@ export const Perfil = () => {
     useEffect(() => {
         loadUserData();
         if (usuario.empresa) {
+            debugger
             loadServicos();
             loadHorarios();
         }
@@ -58,9 +59,9 @@ export const Perfil = () => {
         }
     };
 
-    const loadAgendamentos = (perfilEmpresa) => {
+    const loadAgendamentos = async (perfilEmpresa) => {
         if (perfilEmpresa) {
-            api.get(`agendamento/prestador/${userId}`)
+            await api.get(`agendamento/prestador/${userId}`)
                 .then(response => {
                     console.log('Perfil Agendamento Prestador: ', response.data);
                     setAgendamentos(response.data)
@@ -68,7 +69,7 @@ export const Perfil = () => {
                 .catch(error => console.error('Erro ao carregar agendamentos:', error));
         }
         else {
-            api.get(`agendamento/cliente/${userId}`)
+            await api.get(`agendamento/cliente/${userId}`)
                 .then(response => {
                     console.log('Perfil Agendamento Cliente: ', response.data);
                     setAgendamentos(response.data)
@@ -86,7 +87,10 @@ export const Perfil = () => {
     const loadHorarios = () => {
         debugger
         api.get(`horariodisponibilidade/Prestador/${userId}`)
-            .then(response => setHorarios(response.data))
+            .then(response => {
+                console.log('Horários: ', response);
+                setHorarios(response.data);
+            })
             .catch(error => console.error('Erro ao carregar horarios:', error));
     };
 

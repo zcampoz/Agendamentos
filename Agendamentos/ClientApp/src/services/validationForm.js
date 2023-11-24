@@ -56,3 +56,15 @@ export const validatePasswordHasSpecialChar = (password) => {
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
     return hasSpecialChar;
 }
+
+export const validateTime = (time) => {
+    const minutes = time.split(':').map(Number)[1];
+    return (minutes % 10 === 0) 
+};
+
+export const validateTimeDifference = (initial, final) => {
+    const [hoursInitial, minutesInitial] = initial.split(':').map(Number);
+    const [hoursFinal, minutesFinal] = final.split(':').map(Number);
+
+    return hoursInitial < hoursFinal || (hoursInitial === hoursFinal && minutesInitial < minutesFinal);
+};
