@@ -29,10 +29,10 @@ export const Login = () => {
             return;
         }
 
-        //if (!validatePassword(senha)) {
-        //    setIsPasswordValid(false);
-        //    return;
-        //}
+        if (!validatePassword(senha)) {
+            setIsPasswordValid(false);
+            return;
+        }
 
         try {
             const data = { email, senha };
@@ -83,10 +83,10 @@ export const Login = () => {
                     <input
                         type="password"
                         id="password"
-                        className={`form-control`}
+                        className={`form-control ${isPasswordValid ? '' : 'is-invalid'}`}
                         placeholder="Sua senha"
                         value={senha}
-                        onChange={(e) => setSenha(e.target.value)}
+                        onChange={handlePasswordChange}
                     />
                     <label htmlFor="password" className="form-label">Senha</label>
                     <div className="invalid-feedback">
