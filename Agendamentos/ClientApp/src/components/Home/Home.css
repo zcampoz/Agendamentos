@@ -139,10 +139,11 @@ font-weight: bold;
 
 .input-search {
     display: block;
-    width: 99%;
+    width: 80%;
     -webkit-appearance:none;
     border: 0px;
     padding:5px;
+    outline:none;
 }
 
 .buttonBorder {
@@ -165,10 +166,29 @@ font-weight: bold;
 }
 
 .main-content2 {
-    flex: 1;
+    display: flex;
+    align-items: center; 
+    justify-content: space-between;
+    width: 96%;
 }
 
 .masonryPanel2 {
     background-color: #fff;
     padding: 10px;
+}
+
+.clear-button {
+    border: none; 
+    background: none; 
+    padding: 0; 
+    cursor: pointer; 
+    outline: none;
+}
+
+.clear-button svg {
+    fill: currentColor; 
+}
+
+.clear-button:focus {
+    outline: none; 
 }

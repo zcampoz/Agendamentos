@@ -6,7 +6,9 @@ import './Home.css';
 
 export const Home = () => {
     const [services, setServices] = useState([]);
-    const [categoryFilter, setCategoryFilter] = useState("0");
+    const [categoryFilter, setCategoryFilter] = useState(0);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredServices, setFilteredServices] = useState([]);
     const navigate = useNavigate();
 
     const handleServiceSelection = (service) => {
@@ -17,25 +19,55 @@ export const Home = () => {
         populateServicosData();
     }, []);
 
+    useEffect(() => {
+        if (searchTerm) {
+            const lowerCaseSearchTerm = searchTerm.toLowerCase();
+            const filteredData = services.filter(
+                (service) =>
+                    (service.nome.toLowerCase().includes(lowerCaseSearchTerm) ||
+                    service.descricao.toLowerCase().includes(lowerCaseSearchTerm))
+            );
+            setFilteredServices(filteredData);
+        } else {
+            setFilteredServices(services);
+        }
+    }, [searchTerm, services]);
+
+    useEffect(() => {
+        const categoria = parseInt(categoryFilter, 10);
+        if (categoria === 0) {
+            setFilteredServices(services);
+        } else {
+            const filteredCategory = services.filter(
+                (service) => service.categoriaID === categoria
+            );
+            setFilteredServices(filteredCategory);
+        }
+    }, [categoryFilter, services]);
+
     const handleFilterChange = (event) => {
         setCategoryFilter(event.target.value);
     };
-
-    const filteredServices =
-        categoryFilter === "0"
-            ? services
-            : services.filter((service) => service.categoriaID == categoryFilter);
 
     const populateServicosData = () => {
         api.get('servico')
         .then((response) => {
             console.log(response.data);
             setServices(response.data);
+            setFilteredServices(response.data);
         })
         .catch((error) => {
             console.error('Erro ao buscar serviços:', error);
             alert('Erro ao buscar serviços!');
         });
+    };
+
+    const handleSearchTermChange = (event) => {
+        setSearchTerm(event.target.value);
+    };
+
+    const handleClearSearch = () => {
+        setSearchTerm("");
     };
 
     return (
@@ -52,10 +84,25 @@ export const Home = () => {
                             </svg>
                         </div>
                         <div className="main-content2">
-                            <input
-                                className="input-search"
-                                placeholder="Limpeza, Cabelereiro, Oficina"
-                            ></input>
+                            <div className="main-content2">
+                                <input
+                                    id="instantSearch"
+                                    className="input-search"
+                                    placeholder="Limpeza, Cabelereiro, Oficina"
+                                    value={searchTerm}
+                                    onChange={handleSearchTermChange}
+                                />
+                            </div>
+                            <div>
+                                {searchTerm && (
+                                    <button className="btn btn-link clear-button" onClick={handleClearSearch}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                                        </svg>
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </div>
                     <hr />
@@ -72,7 +119,7 @@ export const Home = () => {
             <div className="main-content">
                 <div>
                     {filteredServices.map((service) => (
-                        <div className="masonryPanel" key={service.categoriaID}>
+                        <div className="masonryPanel" key={service.id}>
                             <h2>{service.nome}</h2>
                             <p>{service.descricao}</p>
                             <p>{service.categoriaNome}</p>

@@ -60,7 +60,6 @@ export const AdicionarDisponibilidade = () => {
 
         api.post('horariodisponibilidade', data)
             .then((response) => {
-                debugger
                 console.log('Adicionou horario', response.data);
                 alert('Disponibilidade adicionada com sucesso!')
                 navigate('/perfil');

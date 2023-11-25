@@ -8,7 +8,8 @@ import { api } from '../../services/api';
 
 export const Perfil = () => {
     const [usuario, setUsuario] = useState({});
-    const [agendamentos, setAgendamentos] = useState([]);
+    const [agendamentosCliente, setAgendamentosCliente] = useState([]);
+    const [agendamentosEmpresa, setAgendamentosEmpresa] = useState([]);
     const [empresa, setEmpresa] = useState(false);
     const [servicos, setServicos] = useState([]);
     const [horarios, setHorarios] = useState([]);
@@ -26,12 +27,9 @@ export const Perfil = () => {
     };
 
     useEffect(() => {
+        loadServicos();
+        loadHorarios();
         loadUserData();
-        if (usuario.empresa) {
-            debugger
-            loadServicos();
-            loadHorarios();
-        }
     }, []);
 
     const StatusAgendamento = {
@@ -47,6 +45,22 @@ export const Perfil = () => {
         return StatusAgendamento[statusKey];
     };
 
+    const DiasDaSemana = {
+        Segunda: 'segunda',
+        Terca: 'terca',
+        Quarta: 'quarta',
+        Quinta: 'quinta',
+        Sexta: 'sexta',
+        Sabado: 'sabado',
+        Domingo: 'domingo',
+    };
+
+    const getDiaSemanaByIndex = (index) => {
+        const keys = Object.keys(DiasDaSemana);
+        const statusKey = keys[index];
+        return DiasDaSemana[statusKey];
+    };
+
     const loadUserData = async () => {
         try {
             const response = await api.get(`usuario/${userId}`);
@@ -59,23 +73,20 @@ export const Perfil = () => {
         }
     };
 
-    const loadAgendamentos = async (perfilEmpresa) => {
-        if (perfilEmpresa) {
-            await api.get(`agendamento/prestador/${userId}`)
-                .then(response => {
-                    console.log('Perfil Agendamento Prestador: ', response.data);
-                    setAgendamentos(response.data)
-                })
-                .catch(error => console.error('Erro ao carregar agendamentos:', error));
-        }
-        else {
-            await api.get(`agendamento/cliente/${userId}`)
-                .then(response => {
-                    console.log('Perfil Agendamento Cliente: ', response.data);
-                    setAgendamentos(response.data)
-                })
-                .catch(error => console.error('Erro ao carregar agendamentos:', error));
-        }
+    const loadAgendamentos = (perfilEmpresa) => {
+        api.get(`agendamento/prestador/${userId}`)
+            .then(response => {
+                console.log('Perfil Agendamento Prestador: ', response.data);
+                setAgendamentosEmpresa(response.data)
+            })
+            .catch(error => console.error('Erro ao carregar agendamentos:', error));
+
+        api.get(`agendamento/cliente/${userId}`)
+            .then(response => {
+                console.log('Perfil Agendamento Cliente: ', response.data);
+                setAgendamentosCliente(response.data)
+            })
+            .catch(error => console.error('Erro ao carregar agendamentos:', error));
     };
 
     const loadServicos = () => {
@@ -85,7 +96,6 @@ export const Perfil = () => {
     };
 
     const loadHorarios = () => {
-        debugger
         api.get(`horariodisponibilidade/Prestador/${userId}`)
             .then(response => {
                 console.log('Horários: ', response);
@@ -169,9 +179,10 @@ export const Perfil = () => {
                 </div>
             )}
 
-            <h3>Agendamentos</h3>
-            {agendamentos.length > 0 ? (
+
+            {agendamentosCliente.length > 0 ? (
                 <>
+                <h3>Agendamentos Cliente</h3>
                 <div className="perfil-grid">
                     <table className="table">
                         <thead>
@@ -184,7 +195,7 @@ export const Perfil = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {agendamentos.map(agendamento => (
+                            {agendamentosCliente.map(agendamento => (
                                 <tr key={agendamento.id}>
                                     <td>{agendamento.id}</td>
                                     <td>{format(new Date(agendamento.dataHora), 'dd/MM/yyyy HH:mm')}</td>
@@ -192,22 +203,6 @@ export const Perfil = () => {
                                     <td>{getStatusByIndex(agendamento.estadoAgendamento)}</td>
                                     <td>
                                         <div className="btn-group" role="group" aria-label="Ações">
-                                            <button
-                                                type="button"
-                                                className="btn btn-primary"
-                                                title="Confirmar"
-                                                onClick={() => confirmarAgendamento(agendamento.id)}
-                                            >
-                                                <FontAwesomeIcon icon={faThumbsUp} />
-                                            </button>
-                                            <button
-                                                type="button"
-                                                className="btn btn-success"
-                                                title="Concluir"
-                                                onClick={() => concluirAgendamento(agendamento.id)}
-                                            >
-                                                <FontAwesomeIcon icon={faCheck} />
-                                            </button>
                                             <button
                                                 type="button"
                                                 className="btn btn-danger"
@@ -225,11 +220,71 @@ export const Perfil = () => {
                 </div>
                 </>
             ) : (
-                    <p><strong>Nenhum agendamento disponivel.</strong></p>
+                    <p><strong>Nenhum agendamento para o cliente.</strong></p>
             )}
+
 
             {empresa && (
                 <>
+                    {agendamentosEmpresa.length > 0 ? (
+                        <>
+                            <h3>Agendamentos Empresa</h3>
+                            <div className="perfil-grid">
+                                <table className="table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Data e Hora</th>
+                                            <th>Atividade</th>
+                                            <th>Status</th>
+                                            <th>Executar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {agendamentosEmpresa.map(agendamento => (
+                                            <tr key={agendamento.id}>
+                                                <td>{agendamento.id}</td>
+                                                <td>{format(new Date(agendamento.dataHora), 'dd/MM/yyyy HH:mm')}</td>
+                                                <td>{agendamento.servico.nome}</td>
+                                                <td>{getStatusByIndex(agendamento.estadoAgendamento)}</td>
+                                                <td>
+                                                    <div className="btn-group" role="group" aria-label="Ações">
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-primary"
+                                                            title="Confirmar"
+                                                            onClick={() => confirmarAgendamento(agendamento.id)}
+                                                        >
+                                                            <FontAwesomeIcon icon={faThumbsUp} />
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-success"
+                                                            title="Concluir"
+                                                            onClick={() => concluirAgendamento(agendamento.id)}
+                                                        >
+                                                            <FontAwesomeIcon icon={faCheck} />
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-danger"
+                                                            title="Cancelar"
+                                                            onClick={() => cancelarAgendamento(agendamento.id)}
+                                                        >
+                                                            <FontAwesomeIcon icon={faTrashAlt} />
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </>
+                    ) : (
+                        <p><strong>Nenhum agendamento para a empresa.</strong></p>
+                    )}
+
                     <h3>Atividades da Empresa</h3>
                     {servicos.length > 0 ? (
                         <>
@@ -292,7 +347,7 @@ export const Perfil = () => {
                                     {horarios.map(horario => (
                                         <tr key={horario.id}>
                                             <td>{horario.id}</td>
-                                            <td>{horario.diaSemana}</td>
+                                            <td>{getDiaSemanaByIndex(horario.diaSemana)}</td>
                                             <td>{horario.horaInicio}</td>
                                             <td>{horario.horaFim}</td>
                                             <td>

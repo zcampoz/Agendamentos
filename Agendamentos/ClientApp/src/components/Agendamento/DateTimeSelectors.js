@@ -84,7 +84,7 @@ export const TimeSlotSelector = ({ selectedDate, selectedService, agendadosList,
                             type="checkbox"
                             className="form-check-input"
                             value={timeSlot.index}
-                            checked={selectedTimeSlot === timeSlot}
+                            checked={selectedTimeSlot === timeSlot.time}
                             disabled={timeSlot.disabled}
                             onChange={() => handleTimeSlotSelect(timeSlot)}
                             />

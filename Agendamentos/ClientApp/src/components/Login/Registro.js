@@ -1,7 +1,7 @@
 ﻿import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'
-import { api } from '../../services/api'
-import { validateEmail, validatePassword, validateName } from '../../services/validationForm'
+import { useNavigate } from 'react-router-dom';
+import { api } from '../../services/api';
+import { validateEmail, validateName, validatePassword } from '../../services/validationForm';
 
 export const Registro = () => {
     const [nome, setNome] = useState('');
@@ -14,16 +14,19 @@ export const Registro = () => {
     const navigate = useNavigate();
 
     const handleNameChange = (e) => {
+        e.preventDefault();
         setNome(e.target.value);
         setIsNameValid(true);
     };
 
     const handleEmailChange = (e) => {
+        e.preventDefault();
         setEmail(e.target.value);
         setIsEmailValid(true);
     };
 
     const handlePasswordChange = (e) => {
+        e.preventDefault();
         setSenha(e.target.value);
         setIsPasswordValid(true);
     };

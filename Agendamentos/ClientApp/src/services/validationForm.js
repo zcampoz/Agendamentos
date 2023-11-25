@@ -68,3 +68,24 @@ export const validateTimeDifference = (initial, final) => {
 
     return hoursInitial < hoursFinal || (hoursInitial === hoursFinal && minutesInitial < minutesFinal);
 };
+
+export const validateServiceName = (name) => {
+    const minLength = 2;
+    const maxLength = 100;
+    return (name.length >= minLength && name.length <= maxLength);
+};
+
+export const validateDescricao = (description) => {
+    const minLength = 2;
+    const maxLength = 300;
+    return (description.length >= minLength && description.length <= maxLength);
+};
+
+export const validatePreco = (value) => {
+    return parseInt(value, 10) > 0;
+};
+
+export const validateDuracao = (duration) => {
+    let minutes = parseInt(duration, 10)
+    return (minutes > 0) && (minutes % 10 === 0);
+};
