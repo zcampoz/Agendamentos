@@ -96,7 +96,7 @@ export const Registro = () => {
                     />
                     <label htmlFor="nome" className="form-label">Nome</label>
                     <div className="invalid-feedback">
-                        O nome deve conter entre 2 e 15 caracteres.
+                        O nome deve conter entre 2 e 50 caracteres.
                     </div>
                 </div>
                 <div className="form-floating mb-3">

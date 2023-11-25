@@ -85,6 +85,8 @@ namespace Agendamentos.Business.Implementation
             var accessToken = token.AccessToken;
             var refreshToken = token.RefreshToken;
 
+            if (string.IsNullOrWhiteSpace(accessToken)) return null;
+
             var principal = _tokenService.GetPrincipalFromExpiredToken(accessToken);
 
             var username = principal.Identity.Name;

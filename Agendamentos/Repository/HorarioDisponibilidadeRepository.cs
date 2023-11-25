@@ -70,7 +70,7 @@ namespace Agendamentos.Repository
         public void Delete(long id)
         {
             var result = dataSet.FirstOrDefault(x => x.ID == id);
-            if (result == null)
+            if (result != null)
             {
                 try
                 {

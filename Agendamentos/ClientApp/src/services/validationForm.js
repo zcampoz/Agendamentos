@@ -1,6 +1,6 @@
 ﻿export const validateName = (name) => {
     const minLength = 2;
-    const maxLength = 15;
+    const maxLength = 50;
     return (name.length >= minLength && name.length <= maxLength);
 };
 

@@ -35,9 +35,11 @@ export const Login = () => {
         }
 
         try {
+            debugger
             const data = { email, senha };
             await api.post('/auth/signin', data)
             .then(response => {
+                debugger
                 console.log('Response:', response.data);
                 if (response.status === 200) {
                     localStorage.clear();
@@ -50,9 +52,13 @@ export const Login = () => {
                 }
             })
             .catch(error => {
+                debugger
+                console.error('Login Error:', error);
                 localStorage.clear();
+                alert('Falha ao fazer login! Tente novamente!');
             });
         } catch (ex) {
+            debugger
             localStorage.clear();
             console.error('Error:', ex);
             alert('Falha ao fazer login! Tente novamente!' + ex);
