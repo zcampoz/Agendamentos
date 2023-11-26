@@ -53,6 +53,10 @@ export const Agendamento = () => {
                     console.error('Erro ao agendar serviço:', error);
                     alert('Erro ao agendar serviço!');
                 });
+        } else {
+            console.error('Erro ao agendar serviço:', selectedService);
+            console.error('Erro ao agendar serviço:', selectedTimeSlot);
+            alert('Não foi possivel agendar o serviço! preencha os campos corretamente!');
         }
     };
 
@@ -65,9 +69,13 @@ export const Agendamento = () => {
                 })
                 .catch((error) => {
                     console.error('Erro ao buscar horarios:', error);
+                    alert('Não foi possível buscar os horários.');
                 });
         }
-        else { console.error('Erro ao buscar horarios:', prestadorID, selectedDate); }
+        else {
+            console.error('Erro ao buscar horarios:', prestadorID, selectedDate);
+            alert('Não foi possível buscar os horários.');
+        }
     };
 
     const getAgendamentosPelaData = (selectedDate) => { 

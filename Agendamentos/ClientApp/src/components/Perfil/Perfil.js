@@ -47,7 +47,7 @@ export const Perfil = () => {
 
     const DiasDaSemana = {
         Segunda: 'segunda',
-        Terca: 'terca',
+        Terca: 'terça',
         Quarta: 'quarta',
         Quinta: 'quinta',
         Sexta: 'sexta',
