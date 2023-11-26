@@ -1,7 +1,7 @@
 ﻿import axios from 'axios';
 
 export const api = axios.create({
-    baseURL: 'https://agendamentoserver.azurewebsites.net/',
+    baseURL: 'https://agendamentoserver.azurewebsites.net/api/',
 })
 
 api.interceptors.request.use(
@@ -9,6 +9,7 @@ api.interceptors.request.use(
         const accessToken = localStorage.getItem('accessToken');
         if (accessToken) {
             config.headers.Authorization = `Bearer ${accessToken}`;
+            config.headers.ContentType = 'application/json';
         }
         return config;
     },
