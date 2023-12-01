@@ -1,7 +1,7 @@
 ﻿import axios from 'axios';
 
 export const api = axios.create({
-    baseURL: 'https://agendamentoserver.azurewebsites.net/api/',
+    baseURL: process.env.PUBLIC_URL + '/api/',
 })
 
 api.interceptors.request.use(
